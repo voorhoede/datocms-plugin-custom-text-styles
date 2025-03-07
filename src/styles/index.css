@@ -1,0 +1,22 @@
+@import 'datocms-react-ui/styles.css';
+
+.custom-style input[name="title"] {
+    width: 80%;
+}
+.custom-style textarea {
+    color: whitesmoke;
+    background: #3a3939;
+    /* height: 400px; */
+
+}
+.custom-style {
+    margin-block-end: 4rem;
+}
+.custom-style button {
+    display: block;
+    margin-left: auto;
+    position: absolute;
+    transform: translateY(50%);
+    z-index: 10;
+    right: 0;
+}

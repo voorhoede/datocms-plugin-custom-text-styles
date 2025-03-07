@@ -1,0 +1,3 @@
+# text-editor-plugin
+
+<INSERT-YOUR-PLUGIN-DESCRIPTION-HERE>
