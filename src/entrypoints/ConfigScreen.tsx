@@ -9,7 +9,13 @@ import {
   TextareaField,
   SelectField,
   Section,
+  FormLabel
 } from "datocms-react-ui";
+import { PlusIcon } from "../components/PlusIcon/PlusIcon";
+import { DUMMY_CUSTOM_STYLE, NODE_OPTIONS } from "./variables";
+
+import * as styling from "./ConfigScreen.module.css";
+import { DeleteIcon } from "../components/DeleteIcon/DeleteIcon";
 
 type Props = {
   ctx: RenderConfigScreenCtx;
@@ -19,42 +25,23 @@ export type CustomStyle = {
   title: string;
   css: string;
   node: (typeof NODE_OPTIONS)[number];
+  isOpen: boolean;
 };
 
-const NODE_OPTIONS = [
-  { label: "Paragraph", value: "paragraph" },
-  { label: "Heading", value: "heading" },
-] as const;
-
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
-  // Load saved parameters or set defaults
   const savedParams = ctx.plugin.attributes.parameters || {};
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
-    (savedParams.customStyles as CustomStyle[]) || [
-      {
-        title: "dummyTitle",
-        css: "",
-      },
-    ]
+    (savedParams.customStyles as CustomStyle[]) || [DUMMY_CUSTOM_STYLE]
   );
 
   useEffect(() => {
     setCustomStyle(
-      (savedParams.customStyles as CustomStyle[]) || [
-        {
-          title: "dummyTitle",
-          css: "",
-          node: "paragraph",
-        },
-      ]
+      (savedParams.customStyles as CustomStyle[]) || [DUMMY_CUSTOM_STYLE]
     );
   }, [ctx]);
 
   const handleGroupAddition = () => {
-    setCustomStyle([
-      ...customStyles,
-      { title: "dummyTitle", css: "", node: NODE_OPTIONS[0] },
-    ]);
+    setCustomStyle([...customStyles, DUMMY_CUSTOM_STYLE]);
     ctx.notice("Added new field group");
   };
 
@@ -73,77 +60,93 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   };
 
   const handleSave = async () => {
-    await ctx.updatePluginParameters({ customStyles });
-    ctx.notice("Settings saved successfully!");
+    try {
+      await ctx.updatePluginParameters({ customStyles });
+      ctx.notice("Settings saved successfully!");
+    } catch (error) {
+      ctx.alert(`Failed to save settings \n ${error}`);
+      return;
+    }
   };
 
   return (
     <Canvas ctx={ctx}>
       <Form className='form'>
-        <div>
-          {customStyles.map((styling, index) => (
-            <Section key={index} title={`Custom Style ${index + 1}`}>
-              <div className='custom-style'>
-                <FieldGroup key={index}>
-                  <Button
-                    type='button'
-                    buttonType='negative'
-                    onClick={() => handleGroupRemoval(index)}>
-                    {/* Remove Custom Style "{styling.title}" */}X
-                  </Button>
-                  <TextField
-                    id={`title-${index}`}
-                    name='title'
-                    label='Title'
-                    value={styling.title || ""}
-                    onChange={(newValue) =>
-                      handleGroupChange(index, "title", newValue)
-                    }
-                  />
-                  <SelectField
-                    id={`node-${index}`}
-                    name='node'
-                    label='Node'
-                    hint='Select one of the options'
-                    value={styling.node}
-                    selectInputProps={{
-                      options: NODE_OPTIONS,
-                    }}
-                    onChange={(newValue) =>
-                      handleGroupChange(
-                        index,
-                        "node",
-                        newValue as (typeof NODE_OPTIONS)[number]
-                      )
-                    }
-                  />
-                  <TextareaField
-                    id={`css-class-${index}`}
-                    name='css-class'
-                    label='CSS Class'
-                    textareaInputProps={{
-                      rows: 10,
-                    }}
-                    value={styling.css || ""}
-                    onChange={(newValue) =>
-                      handleGroupChange(index, "css", newValue)
-                    }
-                  />
-                </FieldGroup>
-              </div>
+        {customStyles.map((style, index) => (
+          <div className={styling.card} key={index}>
+            <Button
+              type='button'
+              className={styling.deleteButton}
+              buttonType='negative'
+              onClick={() => handleGroupRemoval(index)}>
+              <DeleteIcon />
+            </Button>
+            <Section
+              key={index}
+              headerClassName={styling.cardHeader}
+              titleClassName={styling.cardTitle}
+              title={style.title}
+              collapsible={{
+                isOpen: style.isOpen,
+                onToggle: () =>
+                  handleGroupChange(index, "isOpen", !style.isOpen),
+              }}>
+              <FieldGroup key={index} className={styling.cardContent}>
+                <TextField
+                  id={`title-${index}`}
+                  name='title'
+                  label='Title'
+                  value={style.title || ""}
+                  onChange={(newValue) =>
+                    handleGroupChange(index, "title", newValue)
+                  }
+                />
+                <SelectField
+                  id={`node-${index}`}
+                  name='node'
+                  label='Node'
+                  hint='Select one of the options'
+                  value={style.node}
+                  selectInputProps={{
+                    options: NODE_OPTIONS,
+                  }}
+                  onChange={(newValue) =>
+                    handleGroupChange(
+                      index,
+                      "node",
+                      newValue as (typeof NODE_OPTIONS)[number]
+                    )
+                  }
+                />
+                <TextareaField
+                  id={`css-${index}`}
+                  name='css'
+                  label='CSS'
+                  textareaInputProps={{
+                    rows: 10,
+                    className: styling.textareaCode,
+                  }}
+                  value={style.css || ""}
+                  onChange={(newValue) =>
+                    handleGroupChange(index, "css", newValue)
+                  }
+                />
+              </FieldGroup>
             </Section>
-          ))}
-          <Button
-            type='button'
-            buttonType='muted'
-            onClick={handleGroupAddition}>
-            + Add Custom Style
-          </Button>
-        </div>
+          </div>
+        ))}
+        <Button
+          type='button'
+          buttonType='muted'
+          className={styling.buttonContent}
+          onClick={handleGroupAddition}>
+          <PlusIcon /> Add Custom Style
+        </Button>
         <Button
           type='submit'
           buttonType='primary'
           buttonSize='xl'
+          className={styling.saveButton}
           fullWidth
           onClick={handleSave}>
           Save
