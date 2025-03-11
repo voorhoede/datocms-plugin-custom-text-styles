@@ -4,7 +4,7 @@ import { Canvas, Form, Button } from "datocms-react-ui";
 import { PlusIcon } from "../components/PlusIcon/PlusIcon";
 import { DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
-import { getUserParameters } from "../utils/userSettings";
+import { getUserParameters, sortCustomStyle } from "../utils/userSettings";
 import parse from "style-to-js";
 
 import * as styling from "./ConfigScreen.module.css";
@@ -23,17 +23,20 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Load saved custom styles from RenderConfigScreenCtx
    */
   useEffect(() => {
-    setCustomStyle(savedParameters.customStyles);
+    setCustomStyle(savedParameters.customStyles.sort(sortCustomStyle));
   }, [ctx]);
 
   /*
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
-    setCustomStyle([...customStyles, DUMMY_CUSTOM_STYLE]);
+    setCustomStyle(
+      [...customStyles, DUMMY_CUSTOM_STYLE()].sort(sortCustomStyle),
+    );
   };
 
-  const handleStyleRemoval = async (index: number) => {
+  const handleStyleRemoval = async (id: string) => {
+    const index = customStyles.findIndex((style) => style.id === id);
     const isConfirmed = await ctx.openConfirm({
       title: `Remove ${customStyles[index].title}`,
       content: `All Structured Text fields using this style will be affected.`,
@@ -50,18 +53,29 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       ],
     });
     if (isConfirmed) {
-      setCustomStyle((prev) => prev.filter((_, i) => i !== index));
+      setCustomStyle((prev) =>
+        prev.filter((_, i) => i !== index).sort(sortCustomStyle),
+      );
     }
   };
 
+  /*
+   * Only sort if node is changed or if card is closed.
+   * This is to prevent reordering in the midst of updating the title and losing focus.
+   */
   const handleStyleChange = (
-    index: number,
+    id: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => {
-    setCustomStyle((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)),
-    );
+    const index = customStyles.findIndex((style) => style.id === id);
+    const isSort = key === "node" || (key === "isOpen" && value === false);
+    setCustomStyle((prev) => {
+      const updated = prev.map((item, i) =>
+        i === index ? { ...item, [key]: value } : item,
+      );
+      return isSort ? updated.sort(sortCustomStyle) : updated;
+    });
   };
 
   // TODO: add function to select with structured text fields you can apply which custom styles to
@@ -99,8 +113,8 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       <Form className={styling.form}>
         {customStyles.map((style, index) => (
           <StyleCard
+            key={style.id}
             style={style}
-            index={index}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={handleStyleRemoval}
           />
