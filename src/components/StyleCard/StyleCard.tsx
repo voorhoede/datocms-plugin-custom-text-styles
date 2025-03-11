@@ -15,18 +15,16 @@ import { StyleTitle } from "../StyleTitle/StyleTitle";
 import * as styling from "./StyleCard.module.css";
 
 type StyleCardProps = {
-  index: number;
   style: CustomStyle;
   handleStyleChange: (
-    index: number,
+    id: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => void;
-  handleStyleRemoval: (index: number) => void;
+  handleStyleRemoval: (id: string) => void;
 };
 
 export const StyleCard = ({
-  index,
   style,
   handleStyleChange,
   handleStyleRemoval,
@@ -49,7 +47,7 @@ export const StyleCard = ({
   return (
     <div
       className={styling.styleCard}
-      key={index}
+      key={style.id}
       data-status={preview.isValid ? "valid" : "invalid"}
     >
       <Button
@@ -58,27 +56,28 @@ export const StyleCard = ({
         buttonType="negative"
         style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
         className={styling.deleteButton}
-        onClick={() => handleStyleRemoval(index)}
+        onClick={() => handleStyleRemoval(style.id)}
       ></Button>
       <Section
-        key={index}
         headerClassName={styling.header}
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () => handleStyleChange(index, "isOpen", !style.isOpen),
+          onToggle: () => handleStyleChange(style.id, "isOpen", !style.isOpen),
         }}
       >
-        <FieldGroup key={index} className={styling.content}>
+        <FieldGroup key={style.id} className={styling.content}>
           <TextField
-            id={`title-${index}`}
+            id={`title-${style.id}`}
             name="title"
             label="Title"
             value={style.title}
-            onChange={(newValue) => handleStyleChange(index, "title", newValue)}
+            onChange={(newValue) =>
+              handleStyleChange(style.id, "title", newValue)
+            }
           />
           <SelectField
-            id={`node-${index}`}
+            id={`node-${style.id}`}
             name="node"
             label="Node"
             value={style.node}
@@ -87,17 +86,13 @@ export const StyleCard = ({
             }}
             onChange={(newValue) =>
               handleStyleChange(
-                index,
+                style.id,
                 "node",
                 newValue as (typeof NODE_OPTIONS)[number],
               )
             }
           />
-          <CodeBlock
-            index={index}
-            handleStyleChange={handleStyleChange}
-            style={style}
-          />
+          <CodeBlock handleStyleChange={handleStyleChange} style={style} />
           <span style={preview.css}> {preview.text} </span>
         </FieldGroup>
       </Section>
