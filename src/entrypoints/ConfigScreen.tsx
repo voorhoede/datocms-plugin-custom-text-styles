@@ -4,7 +4,7 @@ import { Canvas, Form, Button } from "datocms-react-ui";
 import { PlusIcon } from "../components/PlusIcon/PlusIcon";
 import { DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
-import { getUserParameters } from "../utils/userSettings";
+import { getUserParameters, sortCustomStyle } from "../utils/userSettings";
 import parse from "style-to-js";
 
 import * as styling from "./ConfigScreen.module.css";
@@ -12,6 +12,7 @@ import * as styling from "./ConfigScreen.module.css";
 type Props = {
   ctx: RenderConfigScreenCtx;
 };
+
 
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
@@ -23,14 +24,14 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Load saved custom styles from RenderConfigScreenCtx
    */
   useEffect(() => {
-    setCustomStyle(savedParameters.customStyles);
+    setCustomStyle(savedParameters.customStyles.sort(sortCustomStyle));
   }, [ctx]);
 
   /*
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
-    setCustomStyle([...customStyles, DUMMY_CUSTOM_STYLE]);
+    setCustomStyle([...customStyles, DUMMY_CUSTOM_STYLE].sort(sortCustomStyle));
   };
 
   const handleStyleRemoval = async (index: number) => {
@@ -50,7 +51,9 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       ],
     });
     if (isConfirmed) {
-      setCustomStyle((prev) => prev.filter((_, i) => i !== index));
+      setCustomStyle((prev) =>
+        prev.filter((_, i) => i !== index).sort(sortCustomStyle)
+      );
     }
   };
 
@@ -60,7 +63,9 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     value: CustomStyle[keyof CustomStyle],
   ) => {
     setCustomStyle((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)),
+      prev
+        .map((item, i) => (i === index ? { ...item, [key]: value } : item))
+        .sort(sortCustomStyle)
     );
   };
 

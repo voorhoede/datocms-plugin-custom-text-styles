@@ -10,6 +10,7 @@ import { NODE_OPTIONS } from "../../entrypoints/variables";
 import { CodeBlock } from "../CodeBlock/CodeBlock";
 import { useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
+import { StyleTitle } from "../StyleTitle/StyleTitle";
 
 import * as styling from "./StyleCard.module.css";
 
@@ -46,7 +47,6 @@ export const StyleCard = ({
   }, [style]);
 
   return (
-    // add css class --invalid to the div if the css is invalid
     <div
       className={styling.styleCard}
       key={index}
@@ -63,7 +63,7 @@ export const StyleCard = ({
       <Section
         key={index}
         headerClassName={styling.header}
-        title={style.title}
+        title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
           onToggle: () => handleStyleChange(index, "isOpen", !style.isOpen),

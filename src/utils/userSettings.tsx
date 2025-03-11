@@ -20,3 +20,13 @@ export const getUserStyle = (cssString: string): Object => {
     return {};
   }
 };
+
+/*
+ * Sort custom styles by node and then by title
+ */
+export const sortCustomStyle = (a: CustomStyle, b: CustomStyle) => {
+  if (a.node.label === b.node.label) {
+    return a.title.localeCompare(b.title);
+  }
+  return a.node.label.localeCompare(b.node.label);
+};
