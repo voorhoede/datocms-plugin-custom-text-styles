@@ -7,6 +7,6 @@ export function render(component: React.ReactNode, ctx: any) {
     <React.StrictMode>
       <Canvas ctx={ctx}>{component}</Canvas>
     </React.StrictMode>,
-    document.getElementById("root")
+    document.getElementById("root"),
   );
 }

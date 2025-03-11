@@ -1,6 +1,12 @@
-import { connect, Field } from "datocms-plugin-sdk";
-import ConfigScreen, { CustomStyle } from "./entrypoints/ConfigScreen";
+import {
+  connect,
+  CustomBlockStylesForStructuredTextFieldCtx,
+  Field,
+} from "datocms-plugin-sdk";
+import ConfigScreen from "./entrypoints/ConfigScreen";
 import { render } from "./utils/render";
+import { getUserParameters, getUserStyle } from "./utils/userSettings";
+
 import "./styles/index.css";
 
 connect({
@@ -8,18 +14,17 @@ connect({
     render(<ConfigScreen ctx={ctx} />, ctx);
   },
 
-  customBlockStylesForStructuredTextField(_field: Field, ctx: any) {
-    const userSettings = ctx.plugin.attributes.parameters || {};
-    console.log("user settings", ctx.plugin.attributes.parameters);
+  customBlockStylesForStructuredTextField(
+    _field: Field,
+    ctx: CustomBlockStylesForStructuredTextFieldCtx,
+  ) {
+    const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
 
-    const customstyles: CustomStyle[] = userSettings.customStyles || [];
-	console.log("css", JSON.parse(customstyles[0]?.css));
-
-    return customstyles.map((customStyle, index) => ({
+    return userParameters.customStyles.map((customStyle, index) => ({
       id: `custom-css-style-${index}`,
       node: customStyle.node.value,
       label: customStyle.title,
-      appliedStyle: JSON.parse(customStyle.css),
+      appliedStyle: getUserStyle(customStyle.css),
     }));
   },
 });

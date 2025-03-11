@@ -1,0 +1,41 @@
+.codeBlock {
+  --padding: 0.5em;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Syntaxhighligther that is fully visible, but does NOT actually function as a textarea */
+.syntaxHighligther {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  height: calc(100% - 2 * var(--padding));
+  width: calc(100% - 2 * var(--padding));
+  margin-top: 0;
+}
+
+/* textarea input that is mostly transparent, but fully functional */
+.textarea {
+  position: relative;
+  display: block;
+  z-index: 10;
+  width: auto;
+  background: none;
+  resize: vertical;
+  padding: var(--padding);
+  color: transparent;
+  caret-color: white;
+  font-family: monospace;
+  font-size: var(--font-size-m);
+  line-height: 1.5;
+  text-wrap-mode: nowrap;
+  white-space: pre;
+  outline: none;
+  transition-property: border, outline;
+  transition: 0.2s var(--material-ease);
+}
+.textarea:focus {
+  border: 1px solid var(--primary-color);
+  outline: 3px solid var(--semi-transparent-accent-color);
+}
