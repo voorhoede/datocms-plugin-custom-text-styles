@@ -11,6 +11,7 @@ type CustomStyle = {
   css: string;
   node: CustomStyleNode;
   isOpen: boolean;
+  styleTag: string;
 };
 
 type UserParameters = {

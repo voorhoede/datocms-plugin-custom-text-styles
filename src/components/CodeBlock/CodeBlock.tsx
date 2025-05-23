@@ -16,7 +16,7 @@ type CodeBlockProps = {
 export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
   return (
     <div className={styling.codeBlock}>
-      <FormLabel htmlFor="css">CSS</FormLabel>
+      <FormLabel htmlFor="css">CSS shown in the text editor</FormLabel>
       <div className={styling.codeBlock}>
         <SyntaxHighlighter
           language="css"

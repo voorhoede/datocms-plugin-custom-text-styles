@@ -35,7 +35,7 @@ export const StyleCard = ({
       ? {
           isValid: true,
           css: userStyle,
-          text: "Your text will look like this",
+          text: "Your text will look like this in the text editor",
         }
       : {
           isValid: false,
@@ -48,29 +48,35 @@ export const StyleCard = ({
     <div
       className={styling.styleCard}
       key={style.id}
-      data-status={preview.isValid ? "valid" : "invalid"}
-    >
+      data-status={preview.isValid ? "valid" : "invalid"}>
       <Button
-        type="button"
+        type='button'
         leftIcon={<DeleteIcon />}
-        buttonType="negative"
+        buttonType='negative'
         style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
         className={styling.deleteButton}
-        onClick={() => handleStyleRemoval(style.id)}
-      ></Button>
+        onClick={() => handleStyleRemoval(style.id)}></Button>
       <Section
         headerClassName={styling.header}
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
           onToggle: () => handleStyleChange(style.id, "isOpen", !style.isOpen),
-        }}
-      >
+        }}>
         <FieldGroup key={style.id} className={styling.content}>
           <TextField
+            id={`style-tag-${style.id}`}
+            name='style-tag'
+            label='Style Property passed down to the final Structured Text value.'
+            value={style.styleTag}
+            onChange={(newValue) =>
+              handleStyleChange(style.id, "styleTag", newValue)
+            }
+          />
+          <TextField
             id={`title-${style.id}`}
-            name="title"
-            label="Title"
+            name='title'
+            label='Title shown in the text editor'
             value={style.title}
             onChange={(newValue) =>
               handleStyleChange(style.id, "title", newValue)
@@ -78,8 +84,8 @@ export const StyleCard = ({
           />
           <SelectField
             id={`node-${style.id}`}
-            name="node"
-            label="Node"
+            name='node'
+            label='Node'
             value={style.node}
             selectInputProps={{
               options: NODE_OPTIONS,
@@ -88,7 +94,7 @@ export const StyleCard = ({
               handleStyleChange(
                 style.id,
                 "node",
-                newValue as (typeof NODE_OPTIONS)[number],
+                newValue as (typeof NODE_OPTIONS)[number]
               )
             }
           />
