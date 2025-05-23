@@ -35,7 +35,7 @@ export const StyleCard = ({
       ? {
           isValid: true,
           css: userStyle,
-          text: "Your text will look like this in the text editor",
+          text: "Your text will look like this in the Structured Text editor",
         }
       : {
           isValid: false,
@@ -65,18 +65,18 @@ export const StyleCard = ({
         }}>
         <FieldGroup key={style.id} className={styling.content}>
           <TextField
-            id={`style-tag-${style.id}`}
-            name='style-tag'
-            label='Style Property passed down to the final Structured Text value.'
-            value={style.styleTag}
+            id={`slug-${style.id}`}
+            name='slug'
+            label='Style property passed down to the final Structured Text value.'
+            value={style.slug}
             onChange={(newValue) =>
-              handleStyleChange(style.id, "styleTag", newValue)
+              handleStyleChange(style.id, "slug", newValue)
             }
           />
           <TextField
             id={`title-${style.id}`}
             name='title'
-            label='Title shown in the text editor'
+            label='Title shown in the Structured Text editor'
             value={style.title}
             onChange={(newValue) =>
               handleStyleChange(style.id, "title", newValue)
