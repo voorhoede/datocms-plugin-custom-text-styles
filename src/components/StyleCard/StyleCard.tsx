@@ -10,22 +10,21 @@ import { NODE_OPTIONS } from "../../entrypoints/variables";
 import { CodeBlock } from "../CodeBlock/CodeBlock";
 import { useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
+import { StyleTitle } from "../StyleTitle/StyleTitle";
 
 import * as styling from "./StyleCard.module.css";
 
 type StyleCardProps = {
-  index: number;
   style: CustomStyle;
   handleStyleChange: (
-    index: number,
+    id: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => void;
-  handleStyleRemoval: (index: number) => void;
+  handleStyleRemoval: (id: string) => void;
 };
 
 export const StyleCard = ({
-  index,
   style,
   handleStyleChange,
   handleStyleRemoval,
@@ -36,7 +35,7 @@ export const StyleCard = ({
       ? {
           isValid: true,
           css: userStyle,
-          text: "Your text will look like this",
+          text: "Your text will look like this in the Structured Text editor",
         }
       : {
           isValid: false,
@@ -46,59 +45,61 @@ export const StyleCard = ({
   }, [style]);
 
   return (
-    // add css class --invalid to the div if the css is invalid
     <div
       className={styling.styleCard}
-      key={index}
-      data-status={preview.isValid ? "valid" : "invalid"}
-    >
+      key={style.id}
+      data-status={preview.isValid ? "valid" : "invalid"}>
       <Button
-        type="button"
+        type='button'
         leftIcon={<DeleteIcon />}
-        buttonType="negative"
+        buttonType='negative'
         style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
         className={styling.deleteButton}
-        onClick={() => handleStyleRemoval(index)}
-      ></Button>
+        onClick={() => handleStyleRemoval(style.id)}></Button>
       <Section
-        key={index}
         headerClassName={styling.header}
-        title={style.title}
+        title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () => handleStyleChange(index, "isOpen", !style.isOpen),
-        }}
-      >
-        <FieldGroup key={index} className={styling.content}>
+          onToggle: () => handleStyleChange(style.id, "isOpen", !style.isOpen),
+        }}>
+        <FieldGroup key={style.id} className={styling.content}>
           <TextField
-            id={`title-${index}`}
-            name="title"
-            label="Title"
+            id={`slug-${style.id}`}
+            name='slug'
+            label='Slug (to be used as a CSS class)'
+            value={style.slug}
+            onChange={(newValue) =>
+              handleStyleChange(style.id, "slug", newValue)
+            }
+          />
+          <TextField
+            id={`title-${style.id}`}
+            name='title'
+            label='Title (shown in the Structured Text editor)'
             value={style.title}
-            onChange={(newValue) => handleStyleChange(index, "title", newValue)}
+            onChange={(newValue) =>
+              handleStyleChange(style.id, "title", newValue)
+            }
           />
           <SelectField
-            id={`node-${index}`}
-            name="node"
-            label="Node"
+            id={`node-${style.id}`}
+            name='node'
+            label='Node'
             value={style.node}
             selectInputProps={{
               options: NODE_OPTIONS,
             }}
             onChange={(newValue) =>
               handleStyleChange(
-                index,
+                style.id,
                 "node",
-                newValue as (typeof NODE_OPTIONS)[number],
+                newValue as (typeof NODE_OPTIONS)[number]
               )
             }
           />
-          <CodeBlock
-            index={index}
-            handleStyleChange={handleStyleChange}
-            style={style}
-          />
-          <span style={preview.css}> {preview.text} </span>
+          <CodeBlock handleStyleChange={handleStyleChange} style={style} />
+          <div style={preview.css}> {preview.text} </div>
         </FieldGroup>
       </Section>
     </div>

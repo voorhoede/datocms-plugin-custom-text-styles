@@ -5,23 +5,20 @@ import { monokaiSublime } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import * as styling from "./CodeBlock.module.css";
 
 type CodeBlockProps = {
-  index: number;
   handleStyleChange: (
-    index: number,
+    id: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => void;
   style: CustomStyle;
 };
 
-export const CodeBlock = ({
-  style,
-  index,
-  handleStyleChange,
-}: CodeBlockProps) => {
+export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
   return (
     <div className={styling.codeBlock}>
-      <FormLabel htmlFor="css">CSS</FormLabel>
+      <FormLabel htmlFor="css">
+        CSS (to be applied in the Structured Text editor)
+      </FormLabel>
       <div className={styling.codeBlock}>
         <SyntaxHighlighter
           language="css"
@@ -31,11 +28,11 @@ export const CodeBlock = ({
           {style.css}
         </SyntaxHighlighter>
         <textarea
-          id={`css-${index}`}
+          id={`css-${style.id}`}
           name="css"
           rows={6}
           value={style.css}
-          onChange={(e) => handleStyleChange(index, "css", e.target.value)}
+          onChange={(e) => handleStyleChange(style.id, "css", e.target.value)}
           className={styling.textarea}
         ></textarea>
       </div>
