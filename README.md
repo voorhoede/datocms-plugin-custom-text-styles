@@ -32,7 +32,6 @@ Nodes inside Structured Text will be rendered with a `style` attribute correspon
 (See more info from DatoCMS)[https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-styles-to-nodes]
 
 ```JSON
-# rendered Node in DatoCMS
 {
     "type": "paragraph",
     "style": "stand-out",
