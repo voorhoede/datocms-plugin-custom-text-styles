@@ -47,8 +47,8 @@ Nodes inside Structured Text will be rendered with a `style` attribute correspon
 
 Update your front end so that you attribute the `style` property as a CSS class.
 
-```Astro
-# example of a possible implementation of a Paragraph Node
+```TSX
+// example of a possible implementation of a Paragraph Node
 ---
 import type { Paragraph } from 'datocms-structured-text-utils';
 
@@ -65,7 +65,7 @@ const { node } = Astro.props;
 ```
 
 ```HTML
-# rendered HTML
+<!-- rendered HTML -->
 <p class='shout-out'> This is a Shout Out</p>
 ```
 
