@@ -99,7 +99,7 @@ export const StyleCard = ({
             }
           />
           <CodeBlock handleStyleChange={handleStyleChange} style={style} />
-          <span style={preview.css}> {preview.text} </span>
+          <div style={preview.css}> {preview.text} </div>
         </FieldGroup>
       </Section>
     </div>
