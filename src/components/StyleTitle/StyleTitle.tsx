@@ -1,10 +1,11 @@
 import { useMemo } from "react";
+import { slugify } from "../../utils/helpers";
 
 type StyleCardProps = CustomStyle;
 
 export const StyleTitle = ({ title, node, styleTag }: StyleCardProps) => {
   const slug = useMemo(() => {
-    return styleTag.toLowerCase().replace(/ /g, "-");
+    return slugify(styleTag);
   }, [styleTag]);
 
   return (

@@ -8,7 +8,9 @@ export const DUMMY_CUSTOM_STYLE = () => {
   return {
     id: uuidv4(),
     title: "Stand Out",
-    css: "text-align: center; font-size: 24px; font-weight: bold;",
+    css: `text-align: center;
+font-size: 24px;
+font-weight: bold;`,
     node: NODE_OPTIONS[0],
     isOpen: true,
     styleTag: "stand-out",
