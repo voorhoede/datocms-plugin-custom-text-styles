@@ -67,7 +67,7 @@ export const StyleCard = ({
           <TextField
             id={`slug-${style.id}`}
             name='slug'
-            label='Style property passed down to the final Structured Text value.'
+            label='Slug (to be used as a CSS class)'
             value={style.slug}
             onChange={(newValue) =>
               handleStyleChange(style.id, "slug", newValue)
@@ -76,7 +76,7 @@ export const StyleCard = ({
           <TextField
             id={`title-${style.id}`}
             name='title'
-            label='Title shown in the Structured Text editor'
+            label='Title (shown in the Structured Text editor)'
             value={style.title}
             onChange={(newValue) =>
               handleStyleChange(style.id, "title", newValue)
