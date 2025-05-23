@@ -13,7 +13,7 @@
     "title": "Custom Text Styles",
     "coverImage": "docs/cover.png",
     "previewImage": "docs/preview.png",
-    "entryPoint": "build/index.html",
+    "entryPoint": "dist/index.html",
     "permissions": []
   },
   "files": [
