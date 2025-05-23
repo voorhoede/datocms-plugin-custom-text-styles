@@ -1,12 +1,9 @@
-import { Canvas } from "datocms-react-ui";
-import React from "react";
-import ReactDOM from "react-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-export function render(component: React.ReactNode, ctx: any) {
-  ReactDOM.render(
-    <React.StrictMode>
-      <Canvas ctx={ctx}>{component}</Canvas>
-    </React.StrictMode>,
-    document.getElementById("root"),
-  );
+const container = document.getElementById("root");
+const root = createRoot(container!);
+
+export function render(component: React.ReactNode): void {
+  root.render(<StrictMode>{component}</StrictMode>);
 }
