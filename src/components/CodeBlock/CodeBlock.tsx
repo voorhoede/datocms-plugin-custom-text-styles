@@ -16,7 +16,7 @@ type CodeBlockProps = {
 export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
   return (
     <div className={styling.codeBlock}>
-      <FormLabel htmlFor="css">
+      <FormLabel htmlFor={`css-${style.id}`}>
         CSS (to be applied in the Structured Text editor)
       </FormLabel>
       <div className={styling.codeBlock}>
