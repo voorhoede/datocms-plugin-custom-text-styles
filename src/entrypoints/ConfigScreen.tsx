@@ -6,6 +6,8 @@ import { DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
 import { getUserParameters, sortCustomStyle } from "../utils/userSettings";
 import parse from "style-to-js";
+import { v4 as uuidv4 } from "uuid";
+
 
 import * as styling from "./ConfigScreen.module.css";
 
@@ -31,7 +33,13 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    */
   const handleStyleAddition = () => {
     setCustomStyle(
-      [...customStyles, DUMMY_CUSTOM_STYLE()].sort(sortCustomStyle),
+      [
+        ...customStyles.map(style => ({ ...style, isOpen: false })),
+        {
+          ...DUMMY_CUSTOM_STYLE,
+          id: uuidv4(),
+        }
+      ].sort(sortCustomStyle),
     );
   };
 
@@ -111,7 +119,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         Set your custom CSS Structured Text styles below.
       </p>
       <Form className={styling.form}>
-        {customStyles.map((style, index) => (
+        {customStyles.map((style) => (
           <StyleCard
             key={style.id}
             style={style}

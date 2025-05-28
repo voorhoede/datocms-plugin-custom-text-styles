@@ -1,19 +1,12 @@
-import { v4 as uuidv4 } from "uuid";
-
 export const NODE_OPTIONS: CustomStyleNode[] = [
   { label: "Paragraph", value: "paragraph" },
   { label: "Heading", value: "heading" },
 ];
 
-export const DUMMY_CUSTOM_STYLE = () => {
-  return {
-    id: uuidv4(),
-    title: "Stand Out",
-    css: `text-align: center;
-font-size: 24px;
-font-weight: bold;`,
-    node: NODE_OPTIONS[0],
-    isOpen: true,
-    slug: "stand-out",
-  };
+export const DUMMY_CUSTOM_STYLE = {
+  title: "Centered",
+  css: `text-align: center;`,
+  node: NODE_OPTIONS[0],
+  isOpen: true,
+  slug: "centered",
 };
