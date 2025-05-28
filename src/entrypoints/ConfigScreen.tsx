@@ -77,7 +77,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     value: CustomStyle[keyof CustomStyle],
   ) => {
     const index = customStyles.findIndex((style) => style.id === id);
-    const isSort = key === "node" || (key === "isOpen" && value === false);
+    const isSort = key === "nodes" || (key === "isOpen" && value === false);
     setCustomStyle((prev) => {
       const updated = prev.map((item, i) =>
         i === index ? { ...item, [key]: value } : item,

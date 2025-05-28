@@ -9,7 +9,7 @@ type CustomStyle = {
   id: string;
   title: string;
   css: string;
-  node: CustomStyleNode;
+  nodes: CustomStyleNode[];
   isOpen: boolean;
   slug: string;
 };

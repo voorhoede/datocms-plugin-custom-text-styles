@@ -83,18 +83,19 @@ export const StyleCard = ({
             }
           />
           <SelectField
-            id={`node-${style.id}`}
-            name='node'
-            label='Node'
-            value={style.node}
+            id={`nodes-${style.id}`}
+            name='nodes'
+            label='Nodes'
+            value={style.nodes}
             selectInputProps={{
+              isMulti: true,
               options: NODE_OPTIONS,
             }}
             onChange={(newValue) =>
               handleStyleChange(
                 style.id,
-                "node",
-                newValue as (typeof NODE_OPTIONS)[number]
+                "nodes",
+                newValue as (typeof NODE_OPTIONS)
               )
             }
           />
