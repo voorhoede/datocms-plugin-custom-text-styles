@@ -19,12 +19,14 @@ connect({
   ) {
     const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
 
-    return userParameters.customStyles.map((customStyle, index) => ({
-      id: customStyle.slug,
+    const customStyles = userParameters.customStyles.map((customStyle) => ({
+      id: customStyle.id,
       node: customStyle.node.value,
       label: customStyle.title,
       appliedStyle: getUserStyle(customStyle.css),
       cssClass: customStyle.slug,
     }));
+
+    return customStyles;
   },
 });
