@@ -96,18 +96,43 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       try {
         parse(style.css);
       } catch (error) {
-        throw new Error(`Invalid CSS in ${style.title}: </br> ${error}`);
+        throw new Error(`Invalid CSS in "${style.title}": ${error}`);
       }
+    }
+  };
+
+  const validateFields = () => {
+    const slugs = new Set<string>();
+
+    for (const style of customStyles) {
+      // Check for empty title
+      const trimmedTitle = style.title.trim();
+      if (!trimmedTitle) {
+        throw new Error(`Title cannot be empty for one of the custom styles`);
+      }
+
+      // Check for empty slug
+      const trimmedSlug = style.slug.trim();
+      if (!trimmedSlug) {
+        throw new Error(`Slug cannot be empty for style "${style.title}"`);
+      }
+
+      // Check for duplicate slug
+      if (slugs.has(trimmedSlug)) {
+        throw new Error(`Duplicate slug "${trimmedSlug}" found. Each style must have a unique slug.`);
+      }
+      slugs.add(trimmedSlug);
     }
   };
 
   const handleSave = async () => {
     try {
+      validateFields();
       validateCss();
       await ctx.updatePluginParameters({ customStyles });
       ctx.notice("Custom styles saved successfully!");
     } catch (error) {
-      ctx.alert(`Failed to save custom styles </br></br>${error}`);
+      ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
       return;
     }
   };
@@ -125,6 +150,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             style={style}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={handleStyleRemoval}
+            allStyles={customStyles}
           />
         ))}
         <Button
