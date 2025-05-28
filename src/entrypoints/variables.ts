@@ -6,7 +6,7 @@ export const NODE_OPTIONS: CustomStyleNode[] = [
 export const DUMMY_CUSTOM_STYLE = {
   title: "Centered",
   css: `text-align: center;`,
-  node: NODE_OPTIONS[0],
+  nodes: NODE_OPTIONS,
   isOpen: true,
   slug: "centered",
 };
