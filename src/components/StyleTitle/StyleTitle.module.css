@@ -3,6 +3,6 @@
 }
 
 .slug {
-    background-color: whitesmoke;
+    background-color: var(--light-bg-color);
     padding: 0.3rem;
 }

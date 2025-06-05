@@ -66,10 +66,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     }
   };
 
-  /*
-   * Only sort if node is changed or if card is closed.
-   * This is to prevent reordering in the midst of updating the title and losing focus.
-   */
   const handleStyleChange = (
     createdAt: string,
     key: keyof CustomStyle,
@@ -88,7 +84,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       await ctx.updatePluginParameters({ customStyles });
       ctx.notice("Custom styles saved successfully!");
     } catch (error) {
-      setIsDisabledSave(true);
       ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
       return;
     }
