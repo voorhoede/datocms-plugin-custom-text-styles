@@ -11,6 +11,7 @@ import { CodeBlock } from "../CodeBlock/CodeBlock";
 import { useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
 import { StyleTitle } from "../StyleTitle/StyleTitle";
+import { validateSlugUniqueness, validateTitleUniqueness } from "../../utils/validate";
 
 import * as styling from "./StyleCard.module.css";
 
@@ -31,31 +32,15 @@ export const StyleCard = ({
   handleStyleRemoval,
   allStyles,
 }: StyleCardProps) => {
-  const slugValidation = useMemo(() => {
-    const trimmedSlug = style.slug.trim();
-    if (!trimmedSlug) {
-      return { error: 'Slug cannot be empty' };
-    }
+  const slugValidation = useMemo(() => 
+    validateSlugUniqueness(style.slug, style.id, allStyles),
+    [style.slug, style.id, allStyles]
+  );
 
-    const duplicateStyle = allStyles.find(
-      ({ id, slug }) => id !== style.id && slug.trim() === trimmedSlug
-    );
-    if (duplicateStyle) {
-      return { error: `Slug "${trimmedSlug}" is already used.` };
-    }
-
-    return { error: undefined };
-
-  }, [style.slug, style.id, allStyles]);
-
-  const titleValidation = useMemo(() => {
-    const trimmedTitle = style.title.trim();
-    if (!trimmedTitle) {
-      return { error: 'Title cannot be empty' };
-    }
-
-    return { error: undefined };
-  }, [style.title, style.id, allStyles]);
+  const titleValidation = useMemo(() => 
+    validateTitleUniqueness(style.title, style.id, allStyles),
+    [style.title, style.id, allStyles]
+  );
 
   const preview = useMemo(() => {
     const userStyle = getUserStyle(style.css);
