@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
-  const [isValidSave, setIsValidSave] = useState(true);
+  const [isDisabledSave, setIsDisabledSave] = useState(false);
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
     savedParameters.customStyles
@@ -88,7 +88,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       await ctx.updatePluginParameters({ customStyles });
       ctx.notice("Custom styles saved successfully!");
     } catch (error) {
-      setIsValidSave(false);
+      setIsDisabledSave(true);
       ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
       return;
     }
@@ -97,7 +97,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
 
   return (
     <Canvas ctx={ctx}>
-      <h2> Custom Styles {isValidSave ? "VALID" : "NOOO"} </h2>
+      <h2> Custom Styles </h2>
       <p className={styling.description}>
         Set your custom CSS Structured Text styles below.
       </p>
@@ -108,7 +108,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             style={style}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={handleStyleRemoval}
-            setIsValidSave={setIsValidSave}
+            setIsDisabledSave={setIsDisabledSave}
             allStyles={customStyles}
           />
         ))}
@@ -121,7 +121,8 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         </Button>
         <Button
           type='submit'
-          buttonType='primary'
+          disabled={isDisabledSave}
+          buttonType={isDisabledSave ? "muted" : "primary"}
           buttonSize='xl'
           className={styling.saveButton}
           fullWidth

@@ -8,7 +8,7 @@ import {
 import { DeleteIcon } from "../DeleteIcon/DeleteIcon";
 import { NODE_OPTIONS } from "../../entrypoints/variables";
 import { CodeBlock } from "../CodeBlock/CodeBlock";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
 import { StyleTitle } from "../StyleTitle/StyleTitle";
 import { validateSlugUniqueness, validateTitleUniqueness } from "../../utils/validate";
@@ -20,11 +20,11 @@ type StyleCardProps = {
   handleStyleChange: (
     createdAt: string,
     key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle],
+    value: CustomStyle[keyof CustomStyle]
   ) => void;
   handleStyleRemoval: (id: string) => void;
   allStyles: CustomStyle[];
-  setIsValidSave: (isValid: boolean) => void;
+  setIsDisabledSave: (isValid: boolean) => void;
 };
 
 export const StyleCard = ({
@@ -32,14 +32,15 @@ export const StyleCard = ({
   handleStyleChange,
   handleStyleRemoval,
   allStyles,
+  setIsDisabledSave,
 }: StyleCardProps) => {
-  const slugValidation = useMemo(() => 
-    validateSlugUniqueness(style.slug, style.createdAt, allStyles),
+  const slugValidation = useMemo(
+    () => validateSlugUniqueness(style.slug, style.createdAt, allStyles),
     [style.slug, style.createdAt, allStyles]
   );
 
-  const titleValidation = useMemo(() => 
-    validateTitleUniqueness(style.title, style.createdAt, allStyles),
+  const titleValidation = useMemo(
+    () => validateTitleUniqueness(style.title, style.createdAt, allStyles),
     [style.title, style.createdAt, allStyles]
   );
 
@@ -58,6 +59,13 @@ export const StyleCard = ({
         };
   }, [style]);
 
+  // update isValidSave when slugValidation or titleValidation changes
+  useEffect(() => {
+    const isError =
+      slugValidation.error || titleValidation.error || !preview.isValid;
+    setIsDisabledSave(!!isError);
+  }, [slugValidation, titleValidation, preview, setIsDisabledSave]);
+  
   return (
     <div
       className={styling.styleCard}
@@ -75,7 +83,8 @@ export const StyleCard = ({
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () => handleStyleChange(style.createdAt, "isOpen", !style.isOpen),
+          onToggle: () =>
+            handleStyleChange(style.createdAt, "isOpen", !style.isOpen),
         }}>
         <FieldGroup key={style.createdAt} className={styling.content}>
           <TextField
@@ -113,7 +122,7 @@ export const StyleCard = ({
               handleStyleChange(
                 style.createdAt,
                 "nodes",
-                newValue as (typeof NODE_OPTIONS)
+                newValue as typeof NODE_OPTIONS
               )
             }
           />
