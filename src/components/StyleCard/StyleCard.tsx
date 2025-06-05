@@ -18,12 +18,13 @@ import * as styling from "./StyleCard.module.css";
 type StyleCardProps = {
   style: CustomStyle;
   handleStyleChange: (
-    id: string,
+    createdAt: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => void;
   handleStyleRemoval: (id: string) => void;
   allStyles: CustomStyle[];
+  setIsValidSave: (isValid: boolean) => void;
 };
 
 export const StyleCard = ({
@@ -33,13 +34,13 @@ export const StyleCard = ({
   allStyles,
 }: StyleCardProps) => {
   const slugValidation = useMemo(() => 
-    validateSlugUniqueness(style.slug, style.id, allStyles),
-    [style.slug, style.id, allStyles]
+    validateSlugUniqueness(style.slug, style.createdAt, allStyles),
+    [style.slug, style.createdAt, allStyles]
   );
 
   const titleValidation = useMemo(() => 
-    validateTitleUniqueness(style.title, style.id, allStyles),
-    [style.title, style.id, allStyles]
+    validateTitleUniqueness(style.title, style.createdAt, allStyles),
+    [style.title, style.createdAt, allStyles]
   );
 
   const preview = useMemo(() => {
@@ -60,7 +61,7 @@ export const StyleCard = ({
   return (
     <div
       className={styling.styleCard}
-      key={style.id}
+      key={style.createdAt}
       data-status={preview.isValid ? "valid" : "invalid"}>
       <Button
         type='button'
@@ -68,39 +69,39 @@ export const StyleCard = ({
         buttonType='negative'
         style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
         className={styling.deleteButton}
-        onClick={() => handleStyleRemoval(style.id)}></Button>
+        onClick={() => handleStyleRemoval(style.createdAt)}></Button>
       <Section
         headerClassName={styling.header}
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () => handleStyleChange(style.id, "isOpen", !style.isOpen),
+          onToggle: () => handleStyleChange(style.createdAt, "isOpen", !style.isOpen),
         }}>
-        <FieldGroup key={style.id} className={styling.content}>
+        <FieldGroup key={style.createdAt} className={styling.content}>
           <TextField
-            id={`slug-${style.id}`}
+            id={`slug-${style.createdAt}`}
             required
             name='slug'
             label='Slug (to be used as a CSS class)'
             value={style.slug}
             onChange={(newValue) =>
-              handleStyleChange(style.id, "slug", newValue)
+              handleStyleChange(style.createdAt, "slug", newValue)
             }
             error={slugValidation.error}
           />
           <TextField
-            id={`title-${style.id}`}
+            id={`title-${style.createdAt}`}
             required
             name='title'
             label='Title (shown in the Structured Text editor)'
             value={style.title}
             onChange={(newValue) =>
-              handleStyleChange(style.id, "title", newValue)
+              handleStyleChange(style.createdAt, "title", newValue)
             }
             error={titleValidation.error}
           />
           <SelectField
-            id={`nodes-${style.id}`}
+            id={`nodes-${style.createdAt}`}
             name='nodes'
             label='Nodes'
             value={style.nodes}
@@ -110,7 +111,7 @@ export const StyleCard = ({
             }}
             onChange={(newValue) =>
               handleStyleChange(
-                style.id,
+                style.createdAt,
                 "nodes",
                 newValue as (typeof NODE_OPTIONS)
               )

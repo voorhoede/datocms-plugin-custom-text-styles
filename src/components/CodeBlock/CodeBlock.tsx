@@ -6,7 +6,7 @@ import * as styling from "./CodeBlock.module.css";
 
 type CodeBlockProps = {
   handleStyleChange: (
-    id: string,
+    createdAt: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle],
   ) => void;
@@ -16,7 +16,7 @@ type CodeBlockProps = {
 export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
   return (
     <div className={styling.codeBlock}>
-      <FormLabel htmlFor={`css-${style.id}`}>
+      <FormLabel htmlFor={`css-${style.createdAt}`}>
         CSS (to be applied in the Structured Text editor)
       </FormLabel>
       <div className={styling.codeBlock}>
@@ -28,11 +28,11 @@ export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
           {style.css}
         </SyntaxHighlighter>
         <textarea
-          id={`css-${style.id}`}
+          id={`css-${style.createdAt}`}
           name="css"
           rows={6}
           value={style.css}
-          onChange={(e) => handleStyleChange(style.id, "css", e.target.value)}
+          onChange={(e) => handleStyleChange(style.createdAt, "css", e.target.value)}
           className={styling.textarea}
         ></textarea>
       </div>

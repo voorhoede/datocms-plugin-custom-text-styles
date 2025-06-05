@@ -6,8 +6,8 @@ export type ValidationResult = {
 
 export const validateSlugUniqueness = (
   slug: string,
-  currentId: string,
-  allStyles: CustomStyle[]
+  currentCreatedAt: string,
+  allStyles: CustomStyle[],
 ): ValidationResult => {
   const trimmedSlug = slug.trim();
   if (!trimmedSlug) {
@@ -15,18 +15,17 @@ export const validateSlugUniqueness = (
   }
 
   const duplicateStyle = allStyles.find(
-    ({ id, slug }) => id !== currentId && slug.trim() === trimmedSlug
+    ({ createdAt, slug }) => createdAt !== currentCreatedAt && slug.trim() === trimmedSlug
   );
   if (duplicateStyle) {
     return { error: `Slug "${trimmedSlug}" is already used.` };
   }
-
   return { error: undefined };
 };
 
 export const validateTitleUniqueness = (
   title: string,
-  currentId: string,
+  currentCreatedAt: string,
   allStyles: CustomStyle[]
 ): ValidationResult => {
   const trimmedTitle = title.trim();
@@ -35,12 +34,11 @@ export const validateTitleUniqueness = (
   }
 
   const duplicateStyle = allStyles.find(
-    ({ id, title }) => id !== currentId && title.trim() === trimmedTitle
+    ({ createdAt, title }) => createdAt !== currentCreatedAt && title.trim() === trimmedTitle
   );
   if (duplicateStyle) {
     return { error: `Title "${trimmedTitle}" is already used.` };
   }
-
   return { error: undefined };
 };
 
@@ -58,14 +56,14 @@ const validateCss = (style: CustomStyle) => {
 };
 
 const validateSlug = (style: CustomStyle, customStyles: CustomStyle[]) => {
-  const slugValidation = validateSlugUniqueness(style.slug, style.id, customStyles);
+  const slugValidation = validateSlugUniqueness(style.slug, style.createdAt, customStyles);
   if (slugValidation.error) {
     throw new Error(slugValidation.error);
   }
 };
 
 const validateTitle = (style: CustomStyle, customStyles: CustomStyle[]) => {
-  const titleValidation = validateTitleUniqueness(style.title, style.id, customStyles);
+  const titleValidation = validateTitleUniqueness(style.title, style.createdAt, customStyles);
   if (titleValidation.error) {
     throw new Error(titleValidation.error);
   }

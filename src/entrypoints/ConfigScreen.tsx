@@ -4,8 +4,7 @@ import { Canvas, Form, Button } from "datocms-react-ui";
 import { PlusIcon } from "../components/PlusIcon/PlusIcon";
 import { DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
-import { getUserParameters, sortCustomStyle } from "../utils/userSettings";
-import { v4 as uuidv4 } from "uuid";
+import { getUserParameters } from "../utils/userSettings";
 import { validateFields } from "../utils/validate";
 
 import * as styling from "./ConfigScreen.module.css";
@@ -15,6 +14,7 @@ type Props = {
 };
 
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
+  const [isValidSave, setIsValidSave] = useState(true);
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
     savedParameters.customStyles
@@ -24,7 +24,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Load saved custom styles from RenderConfigScreenCtx
    */
   useEffect(() => {
-    setCustomStyle(savedParameters.customStyles.sort(sortCustomStyle));
+    setCustomStyle(savedParameters.customStyles);
   }, [ctx]);
 
   /*
@@ -36,14 +36,14 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         ...customStyles.map((style) => ({ ...style, isOpen: false })),
         {
           ...DUMMY_CUSTOM_STYLE,
-          id: uuidv4(),
+          createdAt: new Date().toISOString(),
         },
-      ].sort(sortCustomStyle)
+      ]
     );
   };
 
   const handleStyleRemoval = async (id: string) => {
-    const index = customStyles.findIndex((style) => style.id === id);
+    const index = customStyles.findIndex((style) => style.createdAt === id);
     const isConfirmed = await ctx.openConfirm({
       title: `Remove ${customStyles[index].title}`,
       content: `All Structured Text fields using this style will be affected.`,
@@ -61,7 +61,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     });
     if (isConfirmed) {
       setCustomStyle((prev) =>
-        prev.filter((_, i) => i !== index).sort(sortCustomStyle)
+        prev.filter((_, i) => i !== index)
       );
     }
   };
@@ -71,18 +71,15 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * This is to prevent reordering in the midst of updating the title and losing focus.
    */
   const handleStyleChange = (
-    id: string,
+    createdAt: string,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle]
   ) => {
-    const index = customStyles.findIndex((style) => style.id === id);
-    const isSort = key === "nodes" || (key === "isOpen" && value === false);
-    setCustomStyle((prev) => {
-      const updated = prev.map((item, i) =>
-        i === index ? { ...item, [key]: value } : item
-      );
-      return isSort ? updated.sort(sortCustomStyle) : updated;
-    });
+    setCustomStyle((prev) =>
+      prev.map((item) =>
+        item.createdAt === createdAt ? { ...item, [key]: value } : item
+      )
+    );
   };
 
   const handleSave = async () => {
@@ -91,24 +88,27 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       await ctx.updatePluginParameters({ customStyles });
       ctx.notice("Custom styles saved successfully!");
     } catch (error) {
+      setIsValidSave(false);
       ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
       return;
     }
   };
+// Disable save button if unable to save
 
   return (
     <Canvas ctx={ctx}>
-      <h2> Custom Styles </h2>
+      <h2> Custom Styles {isValidSave ? "VALID" : "NOOO"} </h2>
       <p className={styling.description}>
         Set your custom CSS Structured Text styles below.
       </p>
       <Form className={styling.form}>
         {customStyles.map((style) => (
           <StyleCard
-            key={style.id}
+            key={style.createdAt}
             style={style}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={handleStyleRemoval}
+            setIsValidSave={setIsValidSave}
             allStyles={customStyles}
           />
         ))}

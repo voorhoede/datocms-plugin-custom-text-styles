@@ -6,7 +6,7 @@ type CustomStyleNode = {
 };
 
 type CustomStyle = {
-  id: string;
+  createdAt: string;
   title: string;
   css: string;
   nodes: CustomStyleNode[];

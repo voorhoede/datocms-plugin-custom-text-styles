@@ -26,7 +26,6 @@ connect({
           node,
           label: customStyle.title,
           appliedStyle: getUserStyle(customStyle.css),
-          cssClass: customStyle.slug,
         }))
       );
 
