@@ -54,6 +54,13 @@ export const StyleCard = ({
       return { error: 'Title cannot be empty' };
     }
 
+    const duplicateStyle = allStyles.find(
+      ({ id, title }) => id !== style.id && title.trim() === trimmedTitle
+    );
+    if (duplicateStyle) {
+      return { error: `Title "${trimmedTitle}" is already used.` };
+    }
+
     return { error: undefined };
   }, [style.title, style.id, allStyles]);
 
