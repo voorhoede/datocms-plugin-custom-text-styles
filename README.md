@@ -12,10 +12,10 @@ This DatoCMS plugin makes it possible to add custom styles to the editor of Stru
 ### Plugin Settings
 Add your own Custom Styles. You can set the following attributes:
 - `Slug`
-Set this slug to what you want your final css class to be. 
+Set this slug to what you want your final css class to be.
 <strong>Please Note: Upon changing this property, you will have to update all Structured Text Fields already used in DatoCMS.</strong>
 
-- `Title` 
+- `Title`
 This title will be shown in the DatoCMS Structured Text editor.
 
 - `Node`
@@ -24,8 +24,6 @@ For now, you can choose between <i>heading</i> and <i>paragraph</i>
 - `CSS`
 This is the CSS shown in the DatoCMS Structured Text editor
 ![Settings for Custom Text Styles plugin](./docs/custom-text-styles-settings.png)
-
-
 
 ### Front End Structured Text Implementation
 Nodes inside Structured Text will be rendered with a `style` attribute corresponding with the `Slug` set in the Plugin Settings.
@@ -57,20 +55,20 @@ interface Props {
 
 const { node } = Astro.props;
 ---
-// Style attribute ('shout-out') will be accesible from the node
-// Paragraphs that have a custom style of 'Shout Out' will have the css class 'shout-out'
+// Style attribute ('stand-out') will be accesible from the node
+// Paragraphs that have a custom style of 'Shout Out' will have the css class 'stand-out'
 <p class={node.style}><slot /></p>
 
 ```
 
 ```HTML
 <!-- rendered HTML -->
-<p class='shout-out'> This is a Shout Out</p>
+<p class='stand-out'> This is a Shout Out</p>
 ```
 
-You can now proceed to implement your own custom CSS for the `shout-out` class
+You can now proceed to implement your own custom CSS for the `stand-out` class
 ```css
-p.shout-out {
+p.stand-out {
   font-size: 24px;
   color: pink;
 }

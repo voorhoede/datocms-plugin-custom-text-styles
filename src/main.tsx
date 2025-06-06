@@ -19,12 +19,21 @@ connect({
   ) {
     const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
 
-    return userParameters.customStyles.map((customStyle, index) => ({
-      id: customStyle.slug,
-      node: customStyle.node.value,
-      label: customStyle.title,
-      appliedStyle: getUserStyle(customStyle.css),
-      cssClass: customStyle.slug,
-    }));
+    /*
+     Data passed on to Structured Text Field
+     For more information, see:
+     https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-styles-to-nodes
+     */
+    const customStyles = userParameters.customStyles.flatMap(
+      ({ nodes, ...customStyle }) =>
+        nodes.map(({ value: node }) => ({
+          id: customStyle.slug,
+          node,
+          label: customStyle.title,
+          appliedStyle: getUserStyle(customStyle.css),
+        }))
+    );
+
+    return customStyles;
   },
 });
