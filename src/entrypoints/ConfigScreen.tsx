@@ -35,15 +35,13 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       [
         ...customStyles.map((style) => ({ ...style, isOpen: false })),
         {
-          ...DUMMY_CUSTOM_STYLE,
-          createdAt: new Date().toISOString(),
+          ...DUMMY_CUSTOM_STYLE
         },
       ]
     );
   };
 
-  const handleStyleRemoval = async (id: string) => {
-    const index = customStyles.findIndex((style) => style.createdAt === id);
+  const handleStyleRemoval = async ( index: number) => {
     const isConfirmed = await ctx.openConfirm({
       title: `Remove ${customStyles[index].title}`,
       content: `All Structured Text fields using this style will be affected.`,
@@ -67,13 +65,13 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   };
 
   const handleStyleChange = (
-    createdAt: string,
+    index: number,
     key: keyof CustomStyle,
     value: CustomStyle[keyof CustomStyle]
   ) => {
     setCustomStyle((prev) =>
-      prev.map((item) =>
-        item.createdAt === createdAt ? { ...item, [key]: value } : item
+      prev.map((item, i) =>
+        i === index ? { ...item, [key]: value } : item
       )
     );
   };
@@ -97,9 +95,10 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         Set your custom CSS Structured Text styles below.
       </p>
       <Form className={styling.form}>
-        {customStyles.map((style) => (
+        {customStyles.map((style, index) => (
           <StyleCard
-            key={style.createdAt}
+            key={index}
+            index={index}
             style={style}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={handleStyleRemoval}

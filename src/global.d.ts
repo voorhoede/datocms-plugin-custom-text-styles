@@ -6,12 +6,11 @@ type CustomStyleNode = {
 };
 
 type CustomStyle = {
-  createdAt: string;
+  slug: string;
   title: string;
   css: string;
   nodes: CustomStyleNode[];
   isOpen: boolean;
-  slug: string;
 };
 
 type UserParameters = {

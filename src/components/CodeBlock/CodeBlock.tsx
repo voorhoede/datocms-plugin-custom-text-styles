@@ -6,35 +6,40 @@ import * as styling from "./CodeBlock.module.css";
 
 type CodeBlockProps = {
   handleStyleChange: (
-    createdAt: string,
+    index: number,
     key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle],
+    value: CustomStyle[keyof CustomStyle]
   ) => void;
   style: CustomStyle;
+  index: number;
 };
 
-export const CodeBlock = ({ style, handleStyleChange }: CodeBlockProps) => {
+export const CodeBlock = ({
+  style,
+  handleStyleChange,
+  index,
+}: CodeBlockProps) => {
   return (
     <div className={styling.codeBlock}>
-      <FormLabel htmlFor={`css-${style.createdAt}`}>
+      <FormLabel htmlFor={`css-${style.slug}-${index}`}>
         CSS (to be applied in the Structured Text editor)
       </FormLabel>
       <div className={styling.codeBlock}>
         <SyntaxHighlighter
-          language="css"
+          language='css'
           style={monokaiSublime}
-          className={styling.syntaxHighligther}
-        >
+          className={styling.syntaxHighligther}>
           {style.css}
         </SyntaxHighlighter>
         <textarea
-          id={`css-${style.createdAt}`}
-          name="css"
+          id={`css-${style.slug}-${index}`}
+          name='css'
           rows={6}
           value={style.css}
-          onChange={(e) => handleStyleChange(style.createdAt, "css", e.target.value)}
-          className={styling.textarea}
-        ></textarea>
+          onChange={(e) =>
+            handleStyleChange(index, "css", e.target.value)
+          }
+          className={styling.textarea}></textarea>
       </div>
     </div>
   );
