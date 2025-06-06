@@ -1,7 +1,9 @@
 import {
   connect,
   CustomBlockStylesForStructuredTextFieldCtx,
+  CustomMarksForStructuredTextFieldCtx,
   Field,
+  Icon,
 } from "datocms-plugin-sdk";
 import ConfigScreen from "./entrypoints/ConfigScreen";
 import { render } from "./utils/render";
@@ -36,4 +38,20 @@ connect({
 
     return customStyles;
   },
+  customMarksForStructuredTextField(
+    _field: Field,
+    ctx: CustomMarksForStructuredTextFieldCtx
+  ) {
+    const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
+    const customMarks = userParameters.customMarks.flatMap(
+      ({ ...customMark }) => ({
+        id: customMark.slug,
+        label: customMark.title,
+        icon: customMark.icon as Icon,
+        keyboardShortcut: customMark.keyboardShortcut,
+        appliedStyle: getUserStyle(customMark.css),
+      })
+    );
+    return customMarks;
+  }
 });

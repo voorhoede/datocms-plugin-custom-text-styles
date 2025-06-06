@@ -11,31 +11,34 @@ import { CodeBlock } from "../CodeBlock/CodeBlock";
 import { useEffect, useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
 import { StyleTitle } from "../StyleTitle/StyleTitle";
-import { validateSlugUniqueness, validateTitleUniqueness } from "../../utils/validate";
+import {
+  validateSlugUniqueness,
+  validateTitleUniqueness,
+} from "../../utils/validate";
 
 import * as styling from "./StyleCard.module.css";
 
-type StyleCardProps = {
-  style: CustomStyle;
+type StyleCardProps<T extends CustomStyle | CustomMark> = {
+  style: T;
   index: number;
   handleStyleChange: (
     index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+    key: keyof T,
+    value: T[keyof T]
   ) => void;
   handleStyleRemoval: (index: number) => void;
-  allStyles: CustomStyle[];
+  allStyles: T[];
   setIsDisabledSave: (isValid: boolean) => void;
 };
 
-export const StyleCard = ({
+export const StyleCard = <T extends CustomStyle | CustomMark>({
   style,
   handleStyleChange,
   handleStyleRemoval,
   allStyles,
   setIsDisabledSave,
   index,
-}: StyleCardProps) => {
+}: StyleCardProps<T>) => {
   const slugValidation = useMemo(
     () => validateSlugUniqueness(style.slug, index, allStyles),
     [style.slug, index, allStyles]
@@ -67,7 +70,7 @@ export const StyleCard = ({
       slugValidation.error || titleValidation.error || !preview.isValid;
     setIsDisabledSave(!!isError);
   }, [slugValidation, titleValidation, preview, setIsDisabledSave]);
-  
+
   return (
     <div
       className={styling.styleCard}
@@ -85,8 +88,7 @@ export const StyleCard = ({
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () =>
-            handleStyleChange(index, "isOpen", !style.isOpen),
+          onToggle: () => handleStyleChange(index, "isOpen", !style.isOpen as T[keyof T]),
         }}>
         <FieldGroup key={index} className={styling.content}>
           <TextField
@@ -95,9 +97,7 @@ export const StyleCard = ({
             name='slug'
             label='Slug (to be used as a CSS class)'
             value={style.slug}
-            onChange={(newValue) =>
-              handleStyleChange(index, "slug", newValue)
-            }
+            onChange={(newValue) => handleStyleChange(index, "slug", newValue as T[keyof T])}
             error={slugValidation.error}
           />
           <TextField
@@ -106,29 +106,55 @@ export const StyleCard = ({
             name='title'
             label='Title (shown in the Structured Text editor)'
             value={style.title}
-            onChange={(newValue) =>
-              handleStyleChange(index, "title", newValue)
-            }
+            onChange={(newValue) => handleStyleChange(index, "title", newValue as T[keyof T])}
             error={titleValidation.error}
           />
-          <SelectField
-            id={`nodes-${style.slug}-${index}`}
-            name='nodes'
-            label='Nodes'
-            value={style.nodes}
-            selectInputProps={{
-              isMulti: true,
-              options: NODE_OPTIONS,
-            }}
-            onChange={(newValue) =>
-              handleStyleChange(
-                index,
-                "nodes",
-                newValue as typeof NODE_OPTIONS
-              )
-            }
+          {"nodes" in style && (
+            <SelectField
+              id={`nodes-${style.slug}-${index}`}
+              name='nodes'
+              label='Nodes'
+              value={style.nodes}
+              selectInputProps={{
+                isMulti: true,
+                options: NODE_OPTIONS,
+              }}
+              onChange={(newValue) =>
+                handleStyleChange(
+                  index,
+                  "nodes" as keyof T,
+                  newValue as T[keyof T]
+                )
+              }
+            />
+          )}
+          { 'icon' in style && (
+            <TextField
+              id={`icon-${style.slug}-${index}`}
+              name='icon'
+              label='Icon'
+              value={style.icon}
+              onChange={(newValue) =>
+                handleStyleChange(index, "icon" as keyof T, newValue as T[keyof T])
+              }
+            />
+          )}
+          { 'keyboardShortcut' in style && (
+            <TextField
+              id={`keyboardShortcut-${style.slug}-${index}`}
+              name='keyboardShortcut'
+              label='Keyboard Shortcut'
+              value={style.keyboardShortcut}
+              onChange={(newValue) =>
+                handleStyleChange(index, "keyboardShortcut" as keyof T, newValue as T[keyof T])
+              }
+            />
+          )}
+          <CodeBlock
+            handleStyleChange={handleStyleChange}
+            style={style}
+            index={index}
           />
-          <CodeBlock handleStyleChange={handleStyleChange} style={style} index={index} />
           <div style={preview.css}> {preview.text} </div>
         </FieldGroup>
       </Section>

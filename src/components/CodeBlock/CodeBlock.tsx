@@ -4,21 +4,21 @@ import { monokaiSublime } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import * as styling from "./CodeBlock.module.css";
 
-type CodeBlockProps = {
+type CodeBlockProps<T extends CustomStyle | CustomMark> = {
+  style: T;
   handleStyleChange: (
     index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+    key: keyof T,
+    value: T[keyof T]
   ) => void;
-  style: CustomStyle;
   index: number;
 };
 
-export const CodeBlock = ({
+export const CodeBlock = <T extends CustomStyle | CustomMark>({
   style,
   handleStyleChange,
   index,
-}: CodeBlockProps) => {
+}: CodeBlockProps<T>) => {
   return (
     <div className={styling.codeBlock}>
       <FormLabel htmlFor={`css-${style.slug}-${index}`}>
@@ -37,7 +37,7 @@ export const CodeBlock = ({
           rows={6}
           value={style.css}
           onChange={(e) =>
-            handleStyleChange(index, "css", e.target.value)
+            handleStyleChange(index, "css", e.target.value as T[keyof T])
           }
           className={styling.textarea}></textarea>
       </div>

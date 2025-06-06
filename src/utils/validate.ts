@@ -7,7 +7,7 @@ export type ValidationResult = {
 export const validateSlugUniqueness = (
   slug: string,
   currentIndex: number,
-  allStyles: CustomStyle[],
+  allStyles: (CustomStyle | CustomMark)[]
 ): ValidationResult => {
   const trimmedSlug = slug.trim();
   if (!trimmedSlug) {
@@ -26,7 +26,7 @@ export const validateSlugUniqueness = (
 export const validateTitleUniqueness = (
   title: string,
   currentIndex: number,
-  allStyles: CustomStyle[]
+  allStyles: (CustomStyle | CustomMark)[]
 ): ValidationResult => {
   const trimmedTitle = title.trim();
   if (!trimmedTitle) {
@@ -47,7 +47,7 @@ export const validateTitleUniqueness = (
  * Handler for saving all custom styles.
  * Saved custom styles can be used in all structured text fields.
  */
-const validateCss = (style: CustomStyle) => {
+const validateCss = (style: CustomStyle | CustomMark) => {
   try {
     parse(style.css);
   } catch (error) {
@@ -55,20 +55,21 @@ const validateCss = (style: CustomStyle) => {
   }
 };
 
-const validateSlug = (style: CustomStyle, index: number, customStyles: CustomStyle[]) => {
+const validateSlug = (style: CustomStyle | CustomMark, index: number, customStyles: (CustomStyle | CustomMark)[]) => {
   const slugValidation = validateSlugUniqueness(style.slug, index, customStyles);
   if (slugValidation.error) {
     throw new Error(slugValidation.error);
   }
 };
 
-const validateTitle = (style: CustomStyle, index: number, customStyles: CustomStyle[]) => {
+const validateTitle = (style: CustomStyle | CustomMark, index: number, customStyles: (CustomStyle | CustomMark)[]) => {
   const titleValidation = validateTitleUniqueness(style.title, index, customStyles);
   if (titleValidation.error) {
     throw new Error(titleValidation.error);
   }
 };
-export const validateFields = (customStyles: CustomStyle[]) => {
+
+export const validateFields = (customStyles: (CustomStyle | CustomMark)[]) => {
   customStyles.forEach((style, index) => {
     validateCss(style);
     validateSlug(style, index, customStyles);

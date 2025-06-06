@@ -10,6 +10,9 @@ export const getUserParameters = (parameters: {
     customStyles: Array.isArray(parameters.customStyles)
       ? parameters.customStyles
       : [],
+    customMarks: Array.isArray(parameters.customMarks)
+      ? parameters.customMarks
+      : [],
   };
 };
 
