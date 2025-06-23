@@ -8,6 +8,10 @@ import {
 import ConfigScreen from "./entrypoints/ConfigScreen";
 import { render } from "./utils/render";
 import { getUserParameters, getUserStyle } from "./utils/userSettings";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+
+library.add(fas);
 
 import "./styles/index.css";
 

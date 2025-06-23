@@ -31,3 +31,12 @@
   background: none;
   margin: var(--spacing-m);
 }
+
+.iconLabel {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  margin-left: 0.3rem;
+}

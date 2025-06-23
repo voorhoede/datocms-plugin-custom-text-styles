@@ -18,6 +18,6 @@ font-size: 20px;
 font-weight: bold;`,
   isOpen: true,
   slug: "shout",
-  icon: "volume-up",
-  keyboardShortcut: "ctrl+b",
+  icon: "volume-high",
+  keyboardShortcut: "ctrl+shift+p",
 };

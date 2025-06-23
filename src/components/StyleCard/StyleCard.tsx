@@ -21,11 +21,7 @@ import * as styling from "./StyleCard.module.css";
 type StyleCardProps<T extends CustomStyle | CustomMark> = {
   style: T;
   index: number;
-  handleStyleChange: (
-    index: number,
-    key: keyof T,
-    value: T[keyof T]
-  ) => void;
+  handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
   handleStyleRemoval: (index: number) => void;
   allStyles: T[];
   setIsDisabledSave: (isValid: boolean) => void;
@@ -88,7 +84,8 @@ export const StyleCard = <T extends CustomStyle | CustomMark>({
         title={<StyleTitle {...style} />}
         collapsible={{
           isOpen: style.isOpen,
-          onToggle: () => handleStyleChange(index, "isOpen", !style.isOpen as T[keyof T]),
+          onToggle: () =>
+            handleStyleChange(index, "isOpen", !style.isOpen as T[keyof T]),
         }}>
         <FieldGroup key={index} className={styling.content}>
           <TextField
@@ -97,7 +94,9 @@ export const StyleCard = <T extends CustomStyle | CustomMark>({
             name='slug'
             label='Slug (to be used as a CSS class)'
             value={style.slug}
-            onChange={(newValue) => handleStyleChange(index, "slug", newValue as T[keyof T])}
+            onChange={(newValue) =>
+              handleStyleChange(index, "slug", newValue as T[keyof T])
+            }
             error={slugValidation.error}
           />
           <TextField
@@ -106,7 +105,9 @@ export const StyleCard = <T extends CustomStyle | CustomMark>({
             name='title'
             label='Title (shown in the Structured Text editor)'
             value={style.title}
-            onChange={(newValue) => handleStyleChange(index, "title", newValue as T[keyof T])}
+            onChange={(newValue) =>
+              handleStyleChange(index, "title", newValue as T[keyof T])
+            }
             error={titleValidation.error}
           />
           {"nodes" in style && (
@@ -128,25 +129,42 @@ export const StyleCard = <T extends CustomStyle | CustomMark>({
               }
             />
           )}
-          { 'icon' in style && (
+          {"icon" in style && (
             <TextField
               id={`icon-${style.slug}-${index}`}
               name='icon'
-              label='Icon'
+              label={
+                <span>
+                  Icon (set an icon name from
+                  <a className={styling.link} href='https://fontawesome.com/search?q=house&o=r&ic=free' target='_blank'>
+                    fontawesome free icons
+                  </a>. Valid icons will be displayed in the title of this card.
+                  )
+                </span>
+              }
+              placeholder='e.g. "volume-high"'
               value={style.icon}
               onChange={(newValue) =>
-                handleStyleChange(index, "icon" as keyof T, newValue as T[keyof T])
+                handleStyleChange(
+                  index,
+                  "icon" as keyof T,
+                  newValue as T[keyof T]
+                )
               }
             />
           )}
-          { 'keyboardShortcut' in style && (
+          {"keyboardShortcut" in style && (
             <TextField
               id={`keyboardShortcut-${style.slug}-${index}`}
               name='keyboardShortcut'
               label='Keyboard Shortcut'
               value={style.keyboardShortcut}
               onChange={(newValue) =>
-                handleStyleChange(index, "keyboardShortcut" as keyof T, newValue as T[keyof T])
+                handleStyleChange(
+                  index,
+                  "keyboardShortcut" as keyof T,
+                  newValue as T[keyof T]
+                )
               }
             />
           )}
