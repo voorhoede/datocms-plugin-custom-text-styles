@@ -6,11 +6,7 @@ import * as styling from "./CodeBlock.module.css";
 
 type CodeBlockProps<T extends CustomStyle | CustomMark> = {
   style: T;
-  handleStyleChange: (
-    index: number,
-    key: keyof T,
-    value: T[keyof T]
-  ) => void;
+  handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
   index: number;
 };
 
@@ -26,20 +22,22 @@ export const CodeBlock = <T extends CustomStyle | CustomMark>({
       </FormLabel>
       <div className={styling.codeBlock}>
         <SyntaxHighlighter
-          language='css'
+          language="css"
           style={monokaiSublime}
-          className={styling.syntaxHighligther}>
+          className={styling.syntaxHighligther}
+        >
           {style.css}
         </SyntaxHighlighter>
         <textarea
           id={`css-${style.slug}-${index}`}
-          name='css'
+          name="css"
           rows={6}
           value={style.css}
           onChange={(e) =>
             handleStyleChange(index, "css", e.target.value as T[keyof T])
           }
-          className={styling.textarea}></textarea>
+          className={styling.textarea}
+        ></textarea>
       </div>
     </div>
   );

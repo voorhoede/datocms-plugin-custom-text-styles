@@ -17,7 +17,9 @@ export const StyleTitle = (style: StyleCardProps) => {
         {"nodes" in style &&
           `on ${style.nodes.map(({ label }) => label).join(", ")}`}
       </span>
-      {"icon" in style && <FontAwesomeIcon icon={["fas", style.icon as IconName]} />}
+      {"icon" in style && (
+        <FontAwesomeIcon icon={["fas", style.icon as IconName]} />
+      )}
     </span>
   );
 };

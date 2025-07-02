@@ -21,7 +21,7 @@ connect({
   },
   customBlockStylesForStructuredTextField(
     _field: Field,
-    ctx: CustomBlockStylesForStructuredTextFieldCtx
+    ctx: CustomBlockStylesForStructuredTextFieldCtx,
   ) {
     const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
 
@@ -37,14 +37,14 @@ connect({
           node,
           label: customStyle.title,
           appliedStyle: getUserStyle(customStyle.css),
-        }))
+        })),
     );
 
     return customStyles;
   },
   customMarksForStructuredTextField(
     _field: Field,
-    ctx: CustomMarksForStructuredTextFieldCtx
+    ctx: CustomMarksForStructuredTextFieldCtx,
   ) {
     const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
     const customMarks = userParameters.customMarks.flatMap(
@@ -54,8 +54,8 @@ connect({
         icon: customMark.icon as Icon,
         keyboardShortcut: customMark.keyboardShortcut,
         appliedStyle: getUserStyle(customMark.css),
-      })
+      }),
     );
     return customMarks;
-  }
+  },
 });
