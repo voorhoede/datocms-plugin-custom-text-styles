@@ -7,7 +7,7 @@ export type ValidationResult = {
 export const validateSlugUniqueness = (
   slug: string,
   currentIndex: number,
-  allStyles: (CustomStyle | CustomMark)[]
+  allStyles: (CustomStyle | CustomMark)[],
 ): ValidationResult => {
   const trimmedSlug = slug.trim();
   if (!trimmedSlug) {
@@ -15,7 +15,7 @@ export const validateSlugUniqueness = (
   }
 
   const duplicateStyle = allStyles.find(
-    ({ slug }, index) => index !== currentIndex && slug.trim() === trimmedSlug
+    ({ slug }, index) => index !== currentIndex && slug.trim() === trimmedSlug,
   );
   if (duplicateStyle) {
     return { error: `Slug "${trimmedSlug}" is already used.` };
@@ -26,7 +26,7 @@ export const validateSlugUniqueness = (
 export const validateTitleUniqueness = (
   title: string,
   currentIndex: number,
-  allStyles: (CustomStyle | CustomMark)[]
+  allStyles: (CustomStyle | CustomMark)[],
 ): ValidationResult => {
   const trimmedTitle = title.trim();
   if (!trimmedTitle) {
@@ -34,10 +34,34 @@ export const validateTitleUniqueness = (
   }
 
   const duplicateStyle = allStyles.find(
-    ({ title }, index) => index !== currentIndex && title.trim() === trimmedTitle
+    ({ title }, index) =>
+      index !== currentIndex && title.trim() === trimmedTitle,
   );
   if (duplicateStyle) {
     return { error: `Title "${trimmedTitle}" is already used.` };
+  }
+  return { error: undefined };
+};
+
+export const validateKeyboardShortcutUniqueness = (
+  keyboardShortcut: string,
+  currentIndex: number,
+  allMarks: CustomMark[],
+): ValidationResult => {
+  const trimmedKeyboardShortcut = keyboardShortcut.trim();
+  if (!trimmedKeyboardShortcut) {
+    return { error: "Keyboard shortcut cannot be empty" };
+  }
+
+  const duplicateMark = allMarks.find(
+    ({ keyboardShortcut }, index) =>
+      index !== currentIndex &&
+      keyboardShortcut.trim() === trimmedKeyboardShortcut,
+  );
+  if (duplicateMark) {
+    return {
+      error: `Keyboard shortcut "${trimmedKeyboardShortcut}" is already used.`,
+    };
   }
   return { error: undefined };
 };
@@ -55,15 +79,31 @@ const validateCss = (style: CustomStyle | CustomMark) => {
   }
 };
 
-const validateSlug = (style: CustomStyle | CustomMark, index: number, customStyles: (CustomStyle | CustomMark)[]) => {
-  const slugValidation = validateSlugUniqueness(style.slug, index, customStyles);
+const validateSlug = (
+  style: CustomStyle | CustomMark,
+  index: number,
+  customStyles: (CustomStyle | CustomMark)[],
+) => {
+  const slugValidation = validateSlugUniqueness(
+    style.slug,
+    index,
+    customStyles,
+  );
   if (slugValidation.error) {
     throw new Error(slugValidation.error);
   }
 };
 
-const validateTitle = (style: CustomStyle | CustomMark, index: number, customStyles: (CustomStyle | CustomMark)[]) => {
-  const titleValidation = validateTitleUniqueness(style.title, index, customStyles);
+const validateTitle = (
+  style: CustomStyle | CustomMark,
+  index: number,
+  customStyles: (CustomStyle | CustomMark)[],
+) => {
+  const titleValidation = validateTitleUniqueness(
+    style.title,
+    index,
+    customStyles,
+  );
   if (titleValidation.error) {
     throw new Error(titleValidation.error);
   }
@@ -71,7 +111,6 @@ const validateTitle = (style: CustomStyle | CustomMark, index: number, customSty
 
 export const validateFields = (customStyles: (CustomStyle | CustomMark)[]) => {
   customStyles.forEach((style, index) => {
-    validateCss(style);
     validateSlug(style, index, customStyles);
     validateTitle(style, index, customStyles);
   });

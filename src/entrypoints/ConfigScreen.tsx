@@ -1,27 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { RenderConfigScreenCtx } from "datocms-plugin-sdk";
 import { Canvas, Form, Button } from "datocms-react-ui";
 import { PlusIcon } from "../components/PlusIcon/PlusIcon";
 import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
 import { getUserParameters } from "../utils/userSettings";
-import { validateFields } from "../utils/validate";
 
 import * as styling from "./ConfigScreen.module.css";
+import { validateFields } from "../utils/validate";
 
 type Props = {
   ctx: RenderConfigScreenCtx;
 };
 
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
-  const [isDisabledSave, setIsDisabledSave] = useState(false);
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
-    savedParameters.customStyles
+    savedParameters.customStyles,
   );
   const [customMarks, setCustomMark] = useState<CustomMark[]>(
-    savedParameters.customMarks
+    savedParameters.customMarks,
   );
+  const hasAlerted = useRef(false);
+  // HACK: DatoCMS Textfield does not support onBlur, so we need to debounce the save
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /*
    * Load saved custom styles from RenderConfigScreenCtx
@@ -34,21 +36,25 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
-    setCustomStyle([
+    const nextStyles = [
       ...customStyles.map((style) => ({ ...style, isOpen: false })),
       {
         ...DUMMY_CUSTOM_STYLE,
       },
-    ]);
+    ];
+    setCustomStyle(nextStyles);
+    save(nextStyles, "customStyles");
   };
 
   const handleMarkAddition = () => {
-    setCustomMark([
+    const nextMarks = [
       ...customMarks.map((mark) => ({ ...mark, isOpen: false })),
       {
         ...DUMMY_CUSTOM_MARK,
       },
-    ]);
+    ];
+    setCustomMark(nextMarks);
+    save(nextMarks, "customMarks");
   };
 
   const handleStyleRemoval = async (index: number) => {
@@ -68,9 +74,12 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       ],
     });
     if (isConfirmed) {
-      setCustomStyle((prev) => prev.filter((_, i) => i !== index));
+      const nextStyles = customStyles.filter((_, i) => i !== index);
+      setCustomStyle(nextStyles);
+      save(nextStyles, "customStyles");
     }
   };
+
   const handleMarkRemoval = async (index: number) => {
     const isConfirmed = await ctx.openConfirm({
       title: `Remove ${customMarks[index].title}`,
@@ -88,40 +97,69 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
       ],
     });
     if (isConfirmed) {
-      setCustomMark((prev) => prev.filter((_, i) => i !== index));
+      const nextMarks = customMarks.filter((_, i) => i !== index);
+      setCustomMark(nextMarks);
+      save(nextMarks, "customMarks");
     }
   };
   const handleMarkChange = (
     index: number,
     key: keyof CustomMark,
-    value: CustomMark[keyof CustomMark]
+    value: CustomMark[keyof CustomMark],
   ) => {
     setCustomMark((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)),
     );
   };
 
   const handleStyleChange = (
     index: number,
     key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+    value: CustomStyle[keyof CustomStyle],
   ) => {
-    setCustomStyle((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+    const nextStyles = customStyles.map((item, i) =>
+      i === index ? { ...item, [key]: value } : item,
     );
+    setCustomStyle(nextStyles);
+    save(nextStyles, "customStyles");
   };
 
-  const handleSave = async () => {
+  const save = (
+    list: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks",
+  ) => {
     try {
-      validateFields(customStyles);
-      await ctx.updatePluginParameters({ customStyles, customMarks });
-      ctx.notice("Custom styles saved successfully!");
+      validateFields(list);
+
+      // HACK: DatoCMS Textfield does not support onBlur, so we need to debounce the save
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+      saveTimeout.current = setTimeout(() => {
+        savePluginParameters(list, type);
+      }, 500);
     } catch (error) {
-      ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
-      return;
+      if (!hasAlerted.current) {
+        ctx.alert(
+          `Custom styles and marks that contain errors will not be saved`,
+        );
+        hasAlerted.current = true;
+      }
     }
   };
-  // Disable save button if unable to save
+
+  // save use react callback to get correct styles and marks
+  const savePluginParameters = async (
+    list: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks",
+  ) => {
+    try {
+      await ctx.updatePluginParameters({
+        [type]: list,
+        ...(type === "customStyles" ? { customMarks } : { customStyles }),
+      });
+    } catch (error) {
+      ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
+    }
+  };
 
   return (
     <Canvas ctx={ctx}>
@@ -135,15 +173,15 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             style={style}
             handleStyleChange={handleStyleChange}
             handleStyleRemoval={() => handleStyleRemoval(index)}
-            setIsDisabledSave={setIsDisabledSave}
             allStyles={customStyles}
           />
         ))}
         <Button
-          type='button'
-          buttonType='muted'
+          type="button"
+          buttonType="muted"
           leftIcon={<PlusIcon />}
-          onClick={handleStyleAddition}>
+          onClick={handleStyleAddition}
+        >
           Add Custom Style
         </Button>
         <br />
@@ -156,26 +194,16 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             style={mark}
             handleStyleChange={handleMarkChange}
             handleStyleRemoval={() => handleMarkRemoval(index)}
-            setIsDisabledSave={setIsDisabledSave}
             allStyles={customMarks}
           />
         ))}
         <Button
-          type='button'
-          buttonType='muted'
+          type="button"
+          buttonType="muted"
           leftIcon={<PlusIcon />}
-          onClick={handleMarkAddition}>
+          onClick={handleMarkAddition}
+        >
           Add Custom Mark
-        </Button>
-        <Button
-          type='submit'
-          disabled={isDisabledSave}
-          buttonType={isDisabledSave ? "muted" : "primary"}
-          buttonSize='xl'
-          className={styling.saveButton}
-          fullWidth
-          onClick={handleSave}>
-          Save
         </Button>
       </Form>
     </Canvas>
@@ -183,3 +211,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
 };
 
 export default ConfigScreen;
+function validateCss(style: CustomStyle) {
+  throw new Error("Function not implemented.");
+}
