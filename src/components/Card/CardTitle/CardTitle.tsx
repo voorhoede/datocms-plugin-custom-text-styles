@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { slugify } from "../../utils/helpers";
-import styling from "./StyleTitle.module.css";
+import { slugify } from "../../../utils/helpers";
+import styling from "./CardTitle.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 type StyleCardProps = CustomStyle | CustomMark;
 
-export const StyleTitle = (style: StyleCardProps) => {
+export const CardTitle = (style: StyleCardProps) => {
   const slugifiedSlug = useMemo(() => {
     return slugify(style.slug);
   }, [style.slug]);

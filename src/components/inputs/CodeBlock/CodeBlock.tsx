@@ -3,6 +3,9 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { monokaiSublime } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import * as styling from "./CodeBlock.module.css";
+import { useErrorSignal } from "../../Card/ErrorContext";
+import { useEffect, useMemo } from "react";
+import { validateCss } from "../../../utils/validate";
 
 type CodeBlockProps<T extends CustomStyle | CustomMark> = {
   style: T;
@@ -15,6 +18,12 @@ export const CodeBlock = <T extends CustomStyle | CustomMark>({
   handleStyleChange,
   index,
 }: CodeBlockProps<T>) => {
+  const validation = useMemo(() => validateCss(style.css), [style.css]);
+
+  const { setError } = useErrorSignal();
+  useEffect(() => {
+    setError("css", !!validation.error);
+  }, [validation.error, setError]);
   return (
     <div className={styling.codeBlock}>
       <FormLabel htmlFor={`css-${style.slug}-${index}`}>

@@ -71,11 +71,12 @@ export const validateKeyboardShortcutUniqueness = (
  * Handler for saving all custom styles.
  * Saved custom styles can be used in all structured text fields.
  */
-const validateCss = (style: CustomStyle | CustomMark) => {
+export const validateCss = (css: string) => {
   try {
-    parse(style.css);
+    parse(css);
+    return { error: undefined };
   } catch (error) {
-    throw new Error(`Invalid CSS in "${style.title}": ${error}`);
+    return { error: `Invalid CSS: ${error}` };
   }
 };
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { RenderConfigScreenCtx } from "datocms-plugin-sdk";
 import { Canvas, Form, Button } from "datocms-react-ui";
-import { PlusIcon } from "../components/PlusIcon/PlusIcon";
+import { PlusIcon } from "../components/icons/PlusIcon/PlusIcon";
 import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
+import { MarkCard } from "../components/MarkCard/MarkCard";
 import { getUserParameters } from "../utils/userSettings";
 
 import * as styling from "./ConfigScreen.module.css";
@@ -188,7 +189,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         <h2> Custom Marks </h2>
         <p> Styles that apply to inline text</p>
         {customMarks.map((mark, index) => (
-          <StyleCard
+          <MarkCard
             key={index}
             index={index}
             style={mark}
