@@ -1,6 +1,4 @@
-import {
-  SelectField,
-} from "datocms-react-ui";
+import { SelectField } from "datocms-react-ui";
 import { NODE_OPTIONS } from "../../entrypoints/variables";
 import { CodeBlock } from "../inputs/CodeBlock/CodeBlock";
 import { useMemo } from "react";
@@ -15,42 +13,63 @@ import { Preview } from "../inputs/Preview/Preview";
 type StyleCardProps = {
   style: CustomStyle;
   index: number;
-  handleStyleChange: (
-    index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+  setCustomStyle: (styles: CustomStyle[]) => void;
+  save: (
+    styles: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks"
   ) => void;
-  handleStyleRemoval: (index: number) => void;
   allStyles: CustomStyle[];
+  confirmDeletion: (title: string) => Promise<boolean>;
 };
 
 export const StyleCard = ({
   style,
-  handleStyleChange,
-  handleStyleRemoval,
+  setCustomStyle,
   allStyles,
   index,
+  save,
+  confirmDeletion,
 }: StyleCardProps) => {
+
+  const handleChange = (
+    index: number,
+    key: keyof CustomStyle,
+    value: CustomStyle[keyof CustomStyle]
+  ) => {
+    const nextStyles = allStyles.map((item, i) =>
+      i === index ? { ...item, [key]: value } : item
+    );
+    setCustomStyle(nextStyles);
+    save(nextStyles, "customStyles");
+  };
+
+  const handleRemove = async () => {
+    const isConfirmed = await confirmDeletion(style.title);
+    if (isConfirmed) {
+      const nextStyles = allStyles.filter((_, i) => i !== index);
+      setCustomStyle(nextStyles);
+      save(nextStyles, "customStyles");
+    }
+  };
 
   return (
     <Card
       title={<CardTitle {...style} />}
       isOpen={style.isOpen}
       onToggle={() =>
-        handleStyleChange(index, "isOpen", !style.isOpen as CustomStyle["isOpen"])
+        handleChange(index, "isOpen", !style.isOpen as CustomStyle["isOpen"])
       }
-      onDelete={() => handleStyleRemoval(index)}
-    >
+      onDelete={handleRemove}>
       <Slug
         index={index}
         value={style.slug}
-        handleStyleChange={handleStyleChange}
+        handleStyleChange={handleChange}
         allStyles={allStyles}
       />
       <Title
         index={index}
         value={style.title}
-        handleStyleChange={handleStyleChange}
+        handleStyleChange={handleChange}
         allStyles={allStyles}
       />
       <SelectField
@@ -63,12 +82,12 @@ export const StyleCard = ({
           options: NODE_OPTIONS,
         }}
         onChange={(newValue) =>
-          handleStyleChange(index, "nodes", newValue as CustomStyle["nodes"])
+          handleChange(index, "nodes", newValue as CustomStyle["nodes"])
         }
       />
       <CodeBlock
         handleStyleChange={(index, key, value) => {
-          handleStyleChange(index, key, value);
+          handleChange(index, key, value);
         }}
         style={style}
         index={index}

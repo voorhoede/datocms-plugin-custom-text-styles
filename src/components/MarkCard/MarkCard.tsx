@@ -9,50 +9,71 @@ import { Preview } from "../inputs/Preview/Preview";
 import * as styling from "./MarkCard.module.css";
 
 type MarkCardProps = {
-  style: CustomMark;
+  mark: CustomMark;
   index: number;
-  handleStyleChange: (
-    index: number,
-    key: keyof CustomMark,
-    value: CustomMark[keyof CustomMark]
+  setCustomMark: (marks: CustomMark[]) => void;
+  save: (
+    marks: CustomMark[] | CustomStyle[],
+    type: "customMarks" | "customStyles"
   ) => void;
-  handleStyleRemoval: (index: number) => void;
-  allStyles: CustomMark[];
+  allMarks: CustomMark[];
+  confirmDeletion: (title: string) => Promise<boolean>;
 };
 
 export const MarkCard = ({
-  style,
-  handleStyleChange,
-  handleStyleRemoval,
-  allStyles,
+  mark,
+  setCustomMark,
+  allMarks,
+  save,
+  confirmDeletion,
   index,
 }: MarkCardProps) => {
+    const handleChange = (
+      index: number,
+      key: keyof CustomMark,
+      value: CustomMark[keyof CustomMark]
+    ) => {
+      const nextMarks = allMarks.map((item, i) =>
+        i === index ? { ...item, [key]: value } : item
+      );
+      setCustomMark(nextMarks);
+      save(nextMarks, "customMarks");
+    };
+
+    const handleRemove = async () => {
+      const isConfirmed = await confirmDeletion(mark.title);
+      if (isConfirmed) {
+        const nextMarks = allMarks.filter((_, i) => i !== index);
+        setCustomMark(nextMarks);
+        save(nextMarks, "customMarks");
+      }
+    };
   return (
     <Card
-      title={<CardTitle {...style} />}
-      isOpen={style.isOpen}
+      title={<CardTitle {...mark} />}
+      isOpen={mark.isOpen}
       onToggle={() =>
-        handleStyleChange(
+        handleChange(
           index,
           "isOpen",
-          !style.isOpen as CustomMark["isOpen"]
+          !mark.isOpen as CustomMark["isOpen"]
         )
       }
-      onDelete={() => handleStyleRemoval(index)}>
+      onDelete={handleRemove}>
       <Slug
         index={index}
-        value={style.slug}
-        handleStyleChange={handleStyleChange}
-        allStyles={allStyles}
+        value={mark.slug}
+        handleStyleChange={handleChange}
+        allStyles={allMarks}
       />
       <Title
         index={index}
-        value={style.title}
-        handleStyleChange={handleStyleChange}
-        allStyles={allStyles}
+        value={mark.title}
+        handleStyleChange={handleChange}
+        allStyles={allMarks}
       />
       <TextField
-        id={`icon-${style.slug}-${index}`}
+        id={`icon-${mark.slug}-${index}`}
         name='icon'
         label={
           <span>
@@ -67,23 +88,21 @@ export const MarkCard = ({
           </span>
         }
         placeholder='e.g. "volume-high"'
-        value={style.icon}
-        onChange={(newValue) => handleStyleChange(index, "icon", newValue)}
+        value={mark.icon}
+        onChange={(newValue) => handleChange(index, "icon", newValue)}
       />
       <KeyboardShortcut
         index={index}
-        value={style.keyboardShortcut}
-        handleStyleChange={handleStyleChange}
-        allStyles={allStyles}
+        value={mark.keyboardShortcut}
+        handleStyleChange={handleChange}
+        allStyles={allMarks}
       />
       <CodeBlock
-        handleStyleChange={(index, key, value) => {
-          handleStyleChange(index, key, value);
-        }}
-        style={style}
+        handleStyleChange={handleChange}
+        style={mark}
         index={index}
       />
-      <Preview css={style.css} />
+      <Preview css={mark.css} />
     </Card>
   );
 };

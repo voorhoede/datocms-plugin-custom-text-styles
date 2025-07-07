@@ -66,11 +66,6 @@ export const validateKeyboardShortcutUniqueness = (
   return { error: undefined };
 };
 
-// TODO: add function to select with structured text fields you can apply which custom styles to
-/*
- * Handler for saving all custom styles.
- * Saved custom styles can be used in all structured text fields.
- */
 export const validateCss = (css: string) => {
   try {
     parse(css);

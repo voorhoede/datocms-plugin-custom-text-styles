@@ -58,9 +58,9 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     save(nextMarks, "customMarks");
   };
 
-  const handleStyleRemoval = async (index: number) => {
-    const isConfirmed = await ctx.openConfirm({
-      title: `Remove ${customStyles[index].title}`,
+  const confirmDeletion = async (title: string): Promise<boolean> => {
+    return await ctx.openConfirm({
+      title: `Remove ${title}`,
       content: `All Structured Text fields using this style will be affected.`,
       cancel: {
         label: "Cancel",
@@ -73,56 +73,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           intent: "negative",
         },
       ],
-    });
-    if (isConfirmed) {
-      const nextStyles = customStyles.filter((_, i) => i !== index);
-      setCustomStyle(nextStyles);
-      save(nextStyles, "customStyles");
-    }
-  };
-
-  const handleMarkRemoval = async (index: number) => {
-    const isConfirmed = await ctx.openConfirm({
-      title: `Remove ${customMarks[index].title}`,
-      content: `All Structured Text fields using this mark will be affected.`,
-      cancel: {
-        label: "Cancel",
-        value: false,
-      },
-      choices: [
-        {
-          label: "Delete",
-          value: true,
-          intent: "negative",
-        },
-      ],
-    });
-    if (isConfirmed) {
-      const nextMarks = customMarks.filter((_, i) => i !== index);
-      setCustomMark(nextMarks);
-      save(nextMarks, "customMarks");
-    }
-  };
-  const handleMarkChange = (
-    index: number,
-    key: keyof CustomMark,
-    value: CustomMark[keyof CustomMark],
-  ) => {
-    setCustomMark((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)),
-    );
-  };
-
-  const handleStyleChange = (
-    index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle],
-  ) => {
-    const nextStyles = customStyles.map((item, i) =>
-      i === index ? { ...item, [key]: value } : item,
-    );
-    setCustomStyle(nextStyles);
-    save(nextStyles, "customStyles");
+    }) as boolean;
   };
 
   const save = (
@@ -147,7 +98,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     }
   };
 
-  // save use react callback to get correct styles and marks
   const savePluginParameters = async (
     list: CustomStyle[] | CustomMark[],
     type: "customStyles" | "customMarks",
@@ -172,9 +122,10 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             key={index}
             index={index}
             style={style}
-            handleStyleChange={handleStyleChange}
-            handleStyleRemoval={() => handleStyleRemoval(index)}
             allStyles={customStyles}
+            setCustomStyle={setCustomStyle}
+            save={save}
+            confirmDeletion={confirmDeletion}
           />
         ))}
         <Button
@@ -192,10 +143,11 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           <MarkCard
             key={index}
             index={index}
-            style={mark}
-            handleStyleChange={handleMarkChange}
-            handleStyleRemoval={() => handleMarkRemoval(index)}
-            allStyles={customMarks}
+            mark={mark}
+            setCustomMark={setCustomMark}
+            save={save}
+            allMarks={customMarks}
+            confirmDeletion={confirmDeletion}
           />
         ))}
         <Button
