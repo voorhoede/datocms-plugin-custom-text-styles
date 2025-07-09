@@ -1,3 +1,4 @@
+
 export const NODE_OPTIONS: CustomStyleNode[] = [
   { label: "Paragraph", value: "paragraph" },
   { label: "Heading", value: "heading" },
@@ -19,8 +20,8 @@ font-weight: bold;`,
   isOpen: true,
   slug: "shout",
   icon: {
-    label: "volume-high",
-    value: "volume-high",
+    label: "Volume High",
+    value: "faVolumeHigh",
   },
   keyboardShortcut: "ctrl+shift+p",
 };

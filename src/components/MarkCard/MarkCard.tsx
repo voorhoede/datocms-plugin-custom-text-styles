@@ -72,8 +72,6 @@ export const MarkCard = ({
         onBlur={handleBlur}
         allStyles={allMarks}
       />
-      {/* TODO: turn into selector based on FA icons  react-ui component*/}
-      {/* preferably emoji grid,  */}
       <IconSelect
         index={index}
         selected={mark.icon}

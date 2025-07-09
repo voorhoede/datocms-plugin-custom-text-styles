@@ -6,9 +6,8 @@ import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
 import { MarkCard } from "../components/MarkCard/MarkCard";
 import { getUserParameters } from "../utils/userSettings";
-
-import * as styling from "./ConfigScreen.module.css";
 import { validateFields } from "../utils/validate";
+import * as styling from "./ConfigScreen.module.css";
 
 type Props = {
   ctx: RenderConfigScreenCtx;
@@ -51,7 +50,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         ...DUMMY_CUSTOM_MARK,
       },
     ];
-    ctx.alert(JSON.stringify(nextMarks));
     setCustomMark(nextMarks);
     save(nextMarks, "customMarks");
   };
@@ -143,7 +141,6 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             confirmDeletion={confirmDeletion}
           />
         ))}
-        {customMarks.length}
         <Button
           type='button'
           buttonType='muted'
@@ -157,6 +154,3 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
 };
 
 export default ConfigScreen;
-function validateCss(style: CustomStyle) {
-  throw new Error("Function not implemented.");
-}
