@@ -51,7 +51,7 @@ connect({
       ({ ...customMark }) => ({
         id: customMark.slug,
         label: customMark.title,
-        icon: customMark.icon as Icon,
+        icon: customMark.icon.value as Icon,
         keyboardShortcut: customMark.keyboardShortcut,
         appliedStyle: getUserStyle(customMark.css),
       }),

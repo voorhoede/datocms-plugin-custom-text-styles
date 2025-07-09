@@ -17,15 +17,12 @@ type Props = {
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
-    savedParameters.customStyles,
+    savedParameters.customStyles
   );
   const [customMarks, setCustomMark] = useState<CustomMark[]>(
-    savedParameters.customMarks,
+    savedParameters.customMarks
   );
   const hasAlerted = useRef(false);
-  // HACK: DatoCMS Textfield does not support onBlur, so we need to debounce the save
-  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   /*
    * Load saved custom styles from RenderConfigScreenCtx
    */
@@ -54,12 +51,13 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
         ...DUMMY_CUSTOM_MARK,
       },
     ];
+    ctx.alert(JSON.stringify(nextMarks));
     setCustomMark(nextMarks);
     save(nextMarks, "customMarks");
   };
 
   const confirmDeletion = async (title: string): Promise<boolean> => {
-    return await ctx.openConfirm({
+    return (await ctx.openConfirm({
       title: `Remove ${title}`,
       content: `All Structured Text fields using this style will be affected.`,
       cancel: {
@@ -73,25 +71,20 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           intent: "negative",
         },
       ],
-    }) as boolean;
+    })) as boolean;
   };
 
   const save = (
     list: CustomStyle[] | CustomMark[],
-    type: "customStyles" | "customMarks",
+    type: "customStyles" | "customMarks"
   ) => {
     try {
       validateFields(list);
-
-      // HACK: DatoCMS Textfield does not support onBlur, so we need to debounce the save
-      if (saveTimeout.current) clearTimeout(saveTimeout.current);
-      saveTimeout.current = setTimeout(() => {
-        savePluginParameters(list, type);
-      }, 500);
+      savePluginParameters(list, type);
     } catch (error) {
       if (!hasAlerted.current) {
         ctx.alert(
-          `Custom styles and marks that contain errors will not be saved`,
+          `Custom styles and marks that contain errors will not be saved`
         );
         hasAlerted.current = true;
       }
@@ -100,12 +93,13 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
 
   const savePluginParameters = async (
     list: CustomStyle[] | CustomMark[],
-    type: "customStyles" | "customMarks",
+    type: "customStyles" | "customMarks"
   ) => {
     try {
+      const oppositeType = type === "customStyles" ? "customMarks" : "customStyles";
       await ctx.updatePluginParameters({
         [type]: list,
-        ...(type === "customStyles" ? { customMarks } : { customStyles }),
+        [oppositeType]: savedParameters[oppositeType],
       });
     } catch (error) {
       ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
@@ -129,11 +123,10 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           />
         ))}
         <Button
-          type="button"
-          buttonType="muted"
+          type='button'
+          buttonType='muted'
           leftIcon={<PlusIcon />}
-          onClick={handleStyleAddition}
-        >
+          onClick={handleStyleAddition}>
           Add Custom Style
         </Button>
         <br />
@@ -150,12 +143,12 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
             confirmDeletion={confirmDeletion}
           />
         ))}
+        {customMarks.length}
         <Button
-          type="button"
-          buttonType="muted"
+          type='button'
+          buttonType='muted'
           leftIcon={<PlusIcon />}
-          onClick={handleMarkAddition}
-        >
+          onClick={handleMarkAddition}>
           Add Custom Mark
         </Button>
       </Form>

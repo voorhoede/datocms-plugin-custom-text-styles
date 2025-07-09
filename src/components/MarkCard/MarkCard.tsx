@@ -1,4 +1,3 @@
-import { TextField } from "datocms-react-ui";
 import { CodeBlock } from "../inputs/CodeBlock/CodeBlock";
 import { CardTitle } from "../Card/CardTitle/CardTitle";
 import { Slug } from "../inputs/Slug/Slug";
@@ -6,7 +5,7 @@ import { Title } from "../inputs/Title/Title";
 import { KeyboardShortcut } from "../inputs/KeyboardShortcut/KeyboardShortcut";
 import { Card } from "../Card/Card";
 import { Preview } from "../inputs/Preview/Preview";
-import * as styling from "./MarkCard.module.css";
+import { IconSelect } from "../inputs/IconSelect/IconSelect";
 
 type MarkCardProps = {
   mark: CustomMark;
@@ -28,80 +27,67 @@ export const MarkCard = ({
   confirmDeletion,
   index,
 }: MarkCardProps) => {
-    const handleChange = (
-      index: number,
-      key: keyof CustomMark,
-      value: CustomMark[keyof CustomMark]
-    ) => {
-      const nextMarks = allMarks.map((item, i) =>
-        i === index ? { ...item, [key]: value } : item
-      );
+  const handleChange = (
+    index: number,
+    key: keyof CustomMark,
+    value: CustomMark[keyof CustomMark]
+  ) => {
+    const nextMarks = allMarks.map((item, i) =>
+      i === index ? { ...item, [key]: value } : item
+    );
+    setCustomMark(nextMarks);
+  };
+
+  const handleBlur = () => {
+    save(allMarks, "customMarks");
+  };
+
+  const handleRemove = async () => {
+    const isConfirmed = await confirmDeletion(mark.title);
+    if (isConfirmed) {
+      const nextMarks = allMarks.filter((_, i) => i !== index);
       setCustomMark(nextMarks);
       save(nextMarks, "customMarks");
-    };
-
-    const handleRemove = async () => {
-      const isConfirmed = await confirmDeletion(mark.title);
-      if (isConfirmed) {
-        const nextMarks = allMarks.filter((_, i) => i !== index);
-        setCustomMark(nextMarks);
-        save(nextMarks, "customMarks");
-      }
-    };
+    }
+  };
   return (
     <Card
       title={<CardTitle {...mark} />}
       isOpen={mark.isOpen}
       onToggle={() =>
-        handleChange(
-          index,
-          "isOpen",
-          !mark.isOpen as CustomMark["isOpen"]
-        )
+        handleChange(index, "isOpen", !mark.isOpen as CustomMark["isOpen"])
       }
       onDelete={handleRemove}>
       <Slug
         index={index}
         value={mark.slug}
-        handleStyleChange={handleChange}
+        onChange={handleChange}
+        onBlur={handleBlur}
         allStyles={allMarks}
       />
       <Title
         index={index}
         value={mark.title}
-        handleStyleChange={handleChange}
+        onChange={handleChange}
+        onBlur={handleBlur}
         allStyles={allMarks}
       />
-      <TextField
-        id={`icon-${mark.slug}-${index}`}
-        name='icon'
-        label={
-          <span>
-            Icon (set an icon name from
-            <a
-              className={styling.link}
-              href='https://fontawesome.com/search?q=house&o=r&ic=free'
-              target='_blank'>
-              fontawesome free icons
-            </a>
-            . Valid icons will be displayed in the title of this card. )
-          </span>
-        }
-        placeholder='e.g. "volume-high"'
-        value={mark.icon}
-        onChange={(newValue) => handleChange(index, "icon", newValue)}
+      {/* TODO: turn into selector based on FA icons  react-ui component*/}
+      {/* preferably emoji grid,  */}
+      <IconSelect
+        index={index}
+        selected={mark.icon}
+        onChange={handleChange}
+        onBlur={handleBlur}
       />
       <KeyboardShortcut
         index={index}
         value={mark.keyboardShortcut}
-        handleStyleChange={handleChange}
+        onChange={handleChange}
+        onBlur={handleBlur}
         allStyles={allMarks}
       />
-      <CodeBlock
-        handleStyleChange={handleChange}
-        style={mark}
-        index={index}
-      />
+      <CodeBlock handleStyleChange={handleChange} style={mark} index={index} />
       <Preview css={mark.css} />
     </Card>
   );

@@ -8,14 +8,16 @@ const KEY_NAME = "title";
 type SlugProps<T extends CustomStyle | CustomMark> = {
   index: number;
   value: string;
-  handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onBlur: () => void;
   allStyles: T[];
 };
 
 export const Title = <T extends CustomStyle | CustomMark>({
   index,
   value,
-  handleStyleChange,
+  onChange,
+  onBlur,
   allStyles,
 }: SlugProps<T>) => {
   const validation = useMemo(
@@ -34,8 +36,9 @@ export const Title = <T extends CustomStyle | CustomMark>({
       label='Title (shown in the Structured Text editor)'
       value={value}
       onChange={(newValue) =>
-        handleStyleChange(index, KEY_NAME, newValue as T[keyof T])
+        onChange(index, KEY_NAME, newValue as T[keyof T])
       }
+      textInputProps={{ onBlur }}
       error={validation.error}
     />
   );

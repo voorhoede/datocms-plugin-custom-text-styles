@@ -30,7 +30,6 @@ export const StyleCard = ({
   save,
   confirmDeletion,
 }: StyleCardProps) => {
-
   const handleChange = (
     index: number,
     key: keyof CustomStyle,
@@ -40,7 +39,9 @@ export const StyleCard = ({
       i === index ? { ...item, [key]: value } : item
     );
     setCustomStyle(nextStyles);
-    save(nextStyles, "customStyles");
+  };
+  const handleBlur = () => {
+    save(allStyles, "customStyles");
   };
 
   const handleRemove = async () => {
@@ -63,14 +64,16 @@ export const StyleCard = ({
       <Slug
         index={index}
         value={style.slug}
-        handleStyleChange={handleChange}
+        onChange={handleChange}
         allStyles={allStyles}
+        onBlur={handleBlur}
       />
       <Title
         index={index}
         value={style.title}
-        handleStyleChange={handleChange}
+        onChange={handleChange}
         allStyles={allStyles}
+        onBlur={handleBlur}
       />
       <SelectField
         id={`nodes-${style.slug}-${index}`}
@@ -80,6 +83,7 @@ export const StyleCard = ({
         selectInputProps={{
           isMulti: true,
           options: NODE_OPTIONS,
+          onBlur: handleBlur,
         }}
         onChange={(newValue) =>
           handleChange(index, "nodes", newValue as CustomStyle["nodes"])

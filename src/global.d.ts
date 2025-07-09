@@ -17,7 +17,10 @@ type CustomMark = {
   slug: string;
   title: string;
   css: string;
-  icon: string;
+  icon: {
+    label: string;
+    value: string;
+  };
   keyboardShortcut: string;
   isOpen: boolean;
 };

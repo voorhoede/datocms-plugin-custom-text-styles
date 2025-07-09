@@ -8,24 +8,26 @@ const KEY_NAME = "slug";
 type SlugProps<T extends CustomStyle | CustomMark> = {
   index: number;
   value: string;
-  handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onBlur: () => void;
   allStyles: T[];
 };
 
 export const Slug = <T extends CustomStyle | CustomMark>({
   index,
   value,
-  handleStyleChange,
+  onChange,
   allStyles,
+  onBlur,
 }: SlugProps<T>) => {
   const validation = useMemo(
     () => validateSlugUniqueness(value, index, allStyles),
-    [value, index, allStyles],
+    [value, index, allStyles]
   );
   const { setError } = useErrorSignal();
   useEffect(() => {
     setError(KEY_NAME, !!validation.error);
-  }, [validation.error, setError]);
+  }, [validation.error]);
   return (
     <TextField
       id={`${KEY_NAME}-${index}`}
@@ -33,7 +35,8 @@ export const Slug = <T extends CustomStyle | CustomMark>({
       name={KEY_NAME}
       label='Slug (to be used as a CSS class)'
       value={value as string}
-      onChange={(newValue) => handleStyleChange(index, KEY_NAME, newValue as T[keyof T])}
+      onChange={(newValue) => onChange(index, KEY_NAME, newValue as T[keyof T])}
+      textInputProps={{ onBlur }}
       error={validation.error}
     />
   );

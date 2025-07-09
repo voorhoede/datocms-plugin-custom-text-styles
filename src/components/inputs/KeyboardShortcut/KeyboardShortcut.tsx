@@ -8,19 +8,26 @@ const KEY_NAME = "keyboardShortcut";
 type KeyboardShortcutProps<T extends CustomStyle | CustomMark> = {
   index: number;
   value: string;
-  handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onChange: (index: number, key: keyof T, value: T[keyof T]) => void;
+  onBlur: () => void;
   allStyles: CustomMark[];
 };
 
 export const KeyboardShortcut = <T extends CustomStyle | CustomMark>({
   index,
   value,
-  handleStyleChange,
+  onChange,
+  onBlur,
   allStyles,
 }: KeyboardShortcutProps<T>) => {
   const validation = useMemo(
-    () => validateKeyboardShortcutUniqueness(value, index, allStyles as CustomMark[]),
-    [value, index, allStyles],
+    () =>
+      validateKeyboardShortcutUniqueness(
+        value,
+        index,
+        allStyles as CustomMark[]
+      ),
+    [value, index, allStyles]
   );
   const { setError } = useErrorSignal();
   useEffect(() => {
@@ -30,10 +37,13 @@ export const KeyboardShortcut = <T extends CustomStyle | CustomMark>({
     <TextField
       id={`${KEY_NAME}-${index}`}
       name={KEY_NAME}
-      label="Keyboard Shortcut"
+      label='Keyboard Shortcut'
       value={value}
-      onChange={(newValue) => handleStyleChange(index, KEY_NAME as keyof T, newValue as T[keyof T])}
+      onChange={(newValue) =>
+        onChange(index, KEY_NAME as keyof T, newValue as T[keyof T])
+      }
       error={validation.error}
+      textInputProps={{ onBlur }}
     />
   );
 };
