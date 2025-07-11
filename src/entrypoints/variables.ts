@@ -21,7 +21,7 @@ font-weight: bold;`,
   slug: "shout",
   icon: {
     label: "Volume High",
-    value: "faVolumeHigh",
+    value: "volume-high",
   },
   keyboardShortcut: "ctrl+shift+p",
 };
