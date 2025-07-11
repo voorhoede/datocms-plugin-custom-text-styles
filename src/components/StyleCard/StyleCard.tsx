@@ -1,137 +1,101 @@
-import {
-  Button,
-  FieldGroup,
-  Section,
-  SelectField,
-  TextField,
-} from "datocms-react-ui";
-import { DeleteIcon } from "../DeleteIcon/DeleteIcon";
+import { SelectField } from "datocms-react-ui";
 import { NODE_OPTIONS } from "../../entrypoints/variables";
-import { CodeBlock } from "../CodeBlock/CodeBlock";
-import { useEffect, useMemo } from "react";
+import { CodeBlock } from "../inputs/CodeBlock/CodeBlock";
+import { useMemo } from "react";
 import { getUserStyle } from "../../utils/userSettings";
-import { StyleTitle } from "../StyleTitle/StyleTitle";
-import { validateSlugUniqueness, validateTitleUniqueness } from "../../utils/validate";
+import { CardTitle } from "../Card/CardTitle/CardTitle";
+import { Slug } from "../inputs/Slug/Slug";
+import { Title } from "../inputs/Title/Title";
 
-import * as styling from "./StyleCard.module.css";
+import { Card } from "../Card/Card";
+import { Preview } from "../inputs/Preview/Preview";
 
 type StyleCardProps = {
   style: CustomStyle;
   index: number;
-  handleStyleChange: (
-    index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+  setCustomStyle: (styles: CustomStyle[]) => void;
+  save: (
+    styles: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks"
   ) => void;
-  handleStyleRemoval: (index: number) => void;
   allStyles: CustomStyle[];
-  setIsDisabledSave: (isValid: boolean) => void;
+  confirmDeletion: (title: string) => Promise<boolean>;
 };
 
 export const StyleCard = ({
   style,
-  handleStyleChange,
-  handleStyleRemoval,
+  setCustomStyle,
   allStyles,
-  setIsDisabledSave,
   index,
+  save,
+  confirmDeletion,
 }: StyleCardProps) => {
-  const slugValidation = useMemo(
-    () => validateSlugUniqueness(style.slug, index, allStyles),
-    [style.slug, index, allStyles]
-  );
+  const handleChange = (
+    index: number,
+    key: keyof CustomStyle,
+    value: CustomStyle[keyof CustomStyle]
+  ) => {
+    const nextStyles = allStyles.map((item, i) =>
+      i === index ? { ...item, [key]: value } : item
+    );
+    setCustomStyle(nextStyles);
+  };
+  const handleBlur = () => {
+    save(allStyles, "customStyles");
+  };
 
-  const titleValidation = useMemo(
-    () => validateTitleUniqueness(style.title, index, allStyles),
-    [style.title, index, allStyles]
-  );
+  const handleRemove = async () => {
+    const isConfirmed = await confirmDeletion(style.title);
+    if (isConfirmed) {
+      const nextStyles = allStyles.filter((_, i) => i !== index);
+      setCustomStyle(nextStyles);
+      save(nextStyles, "customStyles");
+    }
+  };
 
-  const preview = useMemo(() => {
-    const userStyle = getUserStyle(style.css);
-    return Object.keys(userStyle).length > 0
-      ? {
-          isValid: true,
-          css: userStyle,
-          text: "Your text will look like this in the Structured Text editor",
-        }
-      : {
-          isValid: false,
-          css: { color: "var(--alert-color)" },
-          text: "Please provide valid css",
-        };
-  }, [style]);
-
-  // update isValidSave when slugValidation or titleValidation changes
-  useEffect(() => {
-    const isError =
-      slugValidation.error || titleValidation.error || !preview.isValid;
-    setIsDisabledSave(!!isError);
-  }, [slugValidation, titleValidation, preview, setIsDisabledSave]);
-  
   return (
-    <div
-      className={styling.styleCard}
-      key={index}
-      data-status={preview.isValid ? "valid" : "invalid"}>
-      <Button
-        type='button'
-        leftIcon={<DeleteIcon />}
-        buttonType='negative'
-        style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
-        className={styling.deleteButton}
-        onClick={() => handleStyleRemoval(index)}></Button>
-      <Section
-        headerClassName={styling.header}
-        title={<StyleTitle {...style} />}
-        collapsible={{
-          isOpen: style.isOpen,
-          onToggle: () =>
-            handleStyleChange(index, "isOpen", !style.isOpen),
-        }}>
-        <FieldGroup key={index} className={styling.content}>
-          <TextField
-            id={`slug-${index}`}
-            required
-            name='slug'
-            label='Slug (to be used as a CSS class)'
-            value={style.slug}
-            onChange={(newValue) =>
-              handleStyleChange(index, "slug", newValue)
-            }
-            error={slugValidation.error}
-          />
-          <TextField
-            id={`title-${index}`}
-            required
-            name='title'
-            label='Title (shown in the Structured Text editor)'
-            value={style.title}
-            onChange={(newValue) =>
-              handleStyleChange(index, "title", newValue)
-            }
-            error={titleValidation.error}
-          />
-          <SelectField
-            id={`nodes-${style.slug}-${index}`}
-            name='nodes'
-            label='Nodes'
-            value={style.nodes}
-            selectInputProps={{
-              isMulti: true,
-              options: NODE_OPTIONS,
-            }}
-            onChange={(newValue) =>
-              handleStyleChange(
-                index,
-                "nodes",
-                newValue as typeof NODE_OPTIONS
-              )
-            }
-          />
-          <CodeBlock handleStyleChange={handleStyleChange} style={style} index={index} />
-          <div style={preview.css}> {preview.text} </div>
-        </FieldGroup>
-      </Section>
-    </div>
+    <Card
+      title={<CardTitle {...style} />}
+      isOpen={style.isOpen}
+      onToggle={() =>
+        handleChange(index, "isOpen", !style.isOpen as CustomStyle["isOpen"])
+      }
+      onDelete={handleRemove}>
+      <Slug
+        index={index}
+        value={style.slug}
+        onChange={handleChange}
+        allStyles={allStyles}
+        onBlur={handleBlur}
+      />
+      <Title
+        index={index}
+        value={style.title}
+        onChange={handleChange}
+        allStyles={allStyles}
+        onBlur={handleBlur}
+      />
+      <SelectField
+        id={`nodes-${style.slug}-${index}`}
+        name='nodes'
+        label='Nodes'
+        value={style.nodes}
+        selectInputProps={{
+          isMulti: true,
+          options: NODE_OPTIONS,
+          onBlur: handleBlur,
+        }}
+        onChange={(newValue) =>
+          handleChange(index, "nodes", newValue as CustomStyle["nodes"])
+        }
+      />
+      <CodeBlock
+        handleStyleChange={handleChange}
+        style={style}
+        index={index}
+        onBlur={handleBlur}
+      />
+      <Preview css={style.css} />
+    </Card>
   );
 };

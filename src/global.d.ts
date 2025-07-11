@@ -13,6 +13,19 @@ type CustomStyle = {
   isOpen: boolean;
 };
 
+type CustomMark = {
+  slug: string;
+  title: string;
+  css: string;
+  icon: {
+    label: string;
+    value: string;
+  };
+  keyboardShortcut: string;
+  isOpen: boolean;
+};
+
 type UserParameters = {
   customStyles: CustomStyle[];
+  customMarks: CustomMark[];
 };
