@@ -85,7 +85,12 @@ export const MarkCard = ({
         onBlur={handleBlur}
         allStyles={allMarks}
       />
-      <CodeBlock handleStyleChange={handleChange} style={mark} index={index} />
+      <CodeBlock
+        handleStyleChange={handleChange}
+        style={mark}
+        index={index}
+        onBlur={handleBlur}
+      />
       <Preview css={mark.css} />
     </Card>
   );

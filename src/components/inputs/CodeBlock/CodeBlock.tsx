@@ -11,11 +11,13 @@ type CodeBlockProps<T extends CustomStyle | CustomMark> = {
   style: T;
   handleStyleChange: (index: number, key: keyof T, value: T[keyof T]) => void;
   index: number;
+  onBlur: () => void;
 };
 
 export const CodeBlock = <T extends CustomStyle | CustomMark>({
   style,
   handleStyleChange,
+  onBlur,
   index,
 }: CodeBlockProps<T>) => {
   const validation = useMemo(() => validateCss(style.css), [style.css]);
@@ -45,6 +47,7 @@ export const CodeBlock = <T extends CustomStyle | CustomMark>({
           onChange={(e) =>
             handleStyleChange(index, "css", e.target.value as T[keyof T])
           }
+          onBlur={onBlur}
           className={styling.textarea}
         ></textarea>
       </div>

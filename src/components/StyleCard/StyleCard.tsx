@@ -90,11 +90,10 @@ export const StyleCard = ({
         }
       />
       <CodeBlock
-        handleStyleChange={(index, key, value) => {
-          handleChange(index, key, value);
-        }}
+        handleStyleChange={handleChange}
         style={style}
         index={index}
+        onBlur={handleBlur}
       />
       <Preview css={style.css} />
     </Card>
