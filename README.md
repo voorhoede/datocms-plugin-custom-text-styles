@@ -186,3 +186,7 @@ strong.shout {
   text-transform: uppercase;
 }
 ```
+
+## Contributing
+
+See [contributing.md](https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/contributing.md).
