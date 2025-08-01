@@ -7,7 +7,14 @@
   "author": "Voorhoede",
   "type": "module",
   "keywords": [
-    "datocms-plugin"
+    "datocms-plugin",
+    "custom-text-styles",
+    "field-addon",
+    "structured-text",
+    "custom-styles",
+    "text-styles",
+    "text",
+    "styles"
   ],
   "datoCmsPlugin": {
     "title": "Custom Text Styles",
