@@ -3,8 +3,9 @@
   "description": "A DatoCMS plugin that gives you the ability to have custom styles for Structured Text Fields.",
   "homepage": "https://github.com/voorhoede/datocms-plugin-custom-text-styles",
   "private": false,
-  "version": "1.1.2",
+  "version": "1.2.0",
   "author": "Voorhoede",
+  "license": "MIT",
   "type": "module",
   "keywords": [
     "datocms-plugin",
@@ -16,6 +17,10 @@
     "text",
     "styles"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voorhoede/datocms-plugin-custom-text-styles.git"
+  },
   "datoCmsPlugin": {
     "title": "Custom Text Styles",
     "coverImage": "docs/cover.png",
