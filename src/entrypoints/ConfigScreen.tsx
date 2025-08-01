@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { RenderConfigScreenCtx } from "datocms-plugin-sdk";
 import { Canvas, Form, Button } from "datocms-react-ui";
-import { PlusIcon } from "../components/PlusIcon/PlusIcon";
-import { DUMMY_CUSTOM_STYLE } from "./variables";
+import { PlusIcon } from "../components/icons/PlusIcon/PlusIcon";
+import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
+import { MarkCard } from "../components/MarkCard/MarkCard";
 import { getUserParameters } from "../utils/userSettings";
 import { validateFields } from "../utils/validate";
-
 import * as styling from "./ConfigScreen.module.css";
 
 type Props = {
@@ -14,12 +14,14 @@ type Props = {
 };
 
 const ConfigScreen: React.FC<Props> = ({ ctx }) => {
-  const [isDisabledSave, setIsDisabledSave] = useState(false);
   const savedParameters = getUserParameters(ctx.plugin.attributes.parameters);
   const [customStyles, setCustomStyle] = useState<CustomStyle[]>(
     savedParameters.customStyles
   );
-
+  const [customMarks, setCustomMark] = useState<CustomMark[]>(
+    savedParameters.customMarks
+  );
+  const hasAlerted = useRef(false);
   /*
    * Load saved custom styles from RenderConfigScreenCtx
    */
@@ -31,19 +33,30 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
-    setCustomStyle(
-      [
-        ...customStyles.map((style) => ({ ...style, isOpen: false })),
-        {
-          ...DUMMY_CUSTOM_STYLE
-        },
-      ]
-    );
+    const nextStyles = [
+      ...customStyles.map((style) => ({ ...style, isOpen: false })),
+      {
+        ...DUMMY_CUSTOM_STYLE,
+      },
+    ];
+    setCustomStyle(nextStyles);
+    save(nextStyles, "customStyles");
   };
 
-  const handleStyleRemoval = async ( index: number) => {
-    const isConfirmed = await ctx.openConfirm({
-      title: `Remove ${customStyles[index].title}`,
+  const handleMarkAddition = () => {
+    const nextMarks = [
+      ...customMarks.map((mark) => ({ ...mark, isOpen: false })),
+      {
+        ...DUMMY_CUSTOM_MARK,
+      },
+    ];
+    setCustomMark(nextMarks);
+    save(nextMarks, "customMarks");
+  };
+
+  const confirmDeletion = async (title: string): Promise<boolean> => {
+    return (await ctx.openConfirm({
+      title: `Remove ${title}`,
       content: `All Structured Text fields using this style will be affected.`,
       cancel: {
         label: "Cancel",
@@ -56,54 +69,55 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           intent: "negative",
         },
       ],
-    });
-    if (isConfirmed) {
-      setCustomStyle((prev) =>
-        prev.filter((_, i) => i !== index)
-      );
+    })) as boolean;
+  };
+
+  const save = (
+    list: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks"
+  ) => {
+    try {
+      validateFields(list);
+      savePluginParameters(list, type);
+    } catch (error) {
+      if (!hasAlerted.current) {
+        ctx.alert(
+          `Custom styles and marks that contain errors will not be saved`
+        );
+        hasAlerted.current = true;
+      }
     }
   };
 
-  const handleStyleChange = (
-    index: number,
-    key: keyof CustomStyle,
-    value: CustomStyle[keyof CustomStyle]
+  const savePluginParameters = async (
+    list: CustomStyle[] | CustomMark[],
+    type: "customStyles" | "customMarks"
   ) => {
-    setCustomStyle((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, [key]: value } : item
-      )
-    );
-  };
-
-  const handleSave = async () => {
     try {
-      validateFields(customStyles);
-      await ctx.updatePluginParameters({ customStyles });
-      ctx.notice("Custom styles saved successfully!");
+      const oppositeType = type === "customStyles" ? "customMarks" : "customStyles";
+      await ctx.updatePluginParameters({
+        [type]: list,
+        [oppositeType]: savedParameters[oppositeType],
+      });
     } catch (error) {
       ctx.alert(`Failed to save custom styles:<br/><br/>${error}`);
-      return;
     }
   };
-// Disable save button if unable to save
 
   return (
     <Canvas ctx={ctx}>
-      <h2> Custom Styles </h2>
-      <p className={styling.description}>
-        Set your custom CSS Structured Text styles below.
-      </p>
       <Form className={styling.form}>
+        <h2> Custom Styles </h2>
+        <p> Styles that apply to a node</p>
         {customStyles.map((style, index) => (
           <StyleCard
             key={index}
             index={index}
             style={style}
-            handleStyleChange={handleStyleChange}
-            handleStyleRemoval={handleStyleRemoval}
-            setIsDisabledSave={setIsDisabledSave}
             allStyles={customStyles}
+            setCustomStyle={setCustomStyle}
+            save={save}
+            confirmDeletion={confirmDeletion}
           />
         ))}
         <Button
@@ -113,15 +127,26 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           onClick={handleStyleAddition}>
           Add Custom Style
         </Button>
+        <br />
+        <h2> Custom Marks </h2>
+        <p> Styles that apply to inline text</p>
+        {customMarks.map((mark, index) => (
+          <MarkCard
+            key={index}
+            index={index}
+            mark={mark}
+            setCustomMark={setCustomMark}
+            save={save}
+            allMarks={customMarks}
+            confirmDeletion={confirmDeletion}
+          />
+        ))}
         <Button
-          type='submit'
-          disabled={isDisabledSave}
-          buttonType={isDisabledSave ? "muted" : "primary"}
-          buttonSize='xl'
-          className={styling.saveButton}
-          fullWidth
-          onClick={handleSave}>
-          Save
+          type='button'
+          buttonType='muted'
+          leftIcon={<PlusIcon />}
+          onClick={handleMarkAddition}>
+          Add Custom Mark
         </Button>
       </Form>
     </Canvas>
