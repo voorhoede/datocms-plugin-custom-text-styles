@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/voorhoede/datocms-plugin-custom-text-styles.git"
+    "url": "git+https://github.com/voorhoede/datocms-plugin-custom-text-styles.git"
   },
   "datoCmsPlugin": {
     "title": "Custom Text Styles",
@@ -37,7 +37,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "postversion": "git push --follow-tags"
   },
   "dependencies": {
     "datocms-plugin-sdk": "^2.0.9",
