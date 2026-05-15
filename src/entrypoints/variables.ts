@@ -1,5 +1,6 @@
+import { type BlockNodeTypeWithCustomStyle } from "datocms-structured-text-utils";
 
-export const NODE_OPTIONS: CustomStyleNode[] = [
+export const NODE_OPTIONS: { label: string; value: BlockNodeTypeWithCustomStyle }[] = [
   { label: "Paragraph", value: "paragraph" },
   { label: "Heading", value: "heading" },
 ];
