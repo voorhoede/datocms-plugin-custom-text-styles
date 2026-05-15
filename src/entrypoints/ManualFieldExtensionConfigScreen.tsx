@@ -5,6 +5,7 @@ import {
   Button,
   ButtonGroupButton,
   Section,
+  ButtonGroup,
 } from "datocms-react-ui";
 import { getUserParameters } from "../utils/userSettings";
 import { getFieldParameters } from "../utils/fieldParameters";
@@ -87,81 +88,70 @@ const ManualFieldExtensionConfigScreen: React.FC<Props> = ({ ctx }) => {
       <Section
         title="Allowed Styles"
         collapsible={{ isOpen: stylesOpen, onToggle: () => setStylesOpen((v) => !v) }}
+
       >
-        <div className={styling.sectionContent}>
-          {globalParams.customStyles.length === 0 ? (
+        {globalParams.customStyles.length === 0 ? (
+          <p className={styling.empty}>
+            No custom styles configured. Add some in the Custom Text Styles plugin settings.
+          </p>
+        ) : (
+          <div className={styling.sectionContent}>
+            <div className={styling.pillActions}>
+              <ButtonGroup className={styling.pillRow}>
+                {globalParams.customStyles.map((style) => (
+                  <ButtonGroupButton
+                    key={style.slug}
+                    selected={allowedStyles.includes(style.slug)}
+                    onClick={() => toggleStyle(style.slug)}
+                    className={allowedStyles.includes(style.slug) ? styling.buttonSelected : styling.button}
+                  >
+                    {style.title}
+                  </ButtonGroupButton>
+                ))}
+              </ButtonGroup>
+              <Button className={styling.buttonText} buttonType="muted" buttonSize="xs" onClick={allowedStyles.length === allStyleSlugs.length ? removeAllStyles : selectAllStyles}>
+                {allowedStyles.length === allStyleSlugs.length ? "Deselect all" : "Select all"}
+              </Button>
+            </div>
             <p className={styling.empty}>
-              No custom styles configured. Add some in the plugin settings.
+              Configure which styles will be provided to editors.
             </p>
-          ) : (
-            <>
-              <div className={styling.pillActions}>
-                <div className={styling.pillRow}>
-                  {globalParams.customStyles.map((style) => (
-                    <ButtonGroupButton
-                      key={style.slug}
-                      selected={allowedStyles.includes(style.slug)}
-                      onClick={() => toggleStyle(style.slug)}
-                    >
-                      {style.title}
-                    </ButtonGroupButton>
-                  ))}
-                </div>
-                <div className={styling.pillBulkActions}>
-                  <Button buttonType="muted" buttonSize="xs" onClick={selectAllStyles}>
-                    Select all
-                  </Button>
-                  <Button buttonType="muted" buttonSize="xs" onClick={removeAllStyles}>
-                    Remove all
-                  </Button>
-                </div>
-              </div>
-              <p className={styling.empty}>
-                Configure which formatting options will be provided to editors.
-              </p>
-            </>
-          )}
-        </div>
+          </div>
+        )}
       </Section>
 
       <Section
         title="Allowed Marks"
         collapsible={{ isOpen: marksOpen, onToggle: () => setMarksOpen((v) => !v) }}
       >
-        <div className={styling.sectionContent}>
           {globalParams.customMarks.length === 0 ? (
             <p className={styling.empty}>
-              No custom marks configured. Add some in the plugin settings.
+              No custom marks configured. Add some in the Custom Text Styles plugin settings.
             </p>
           ) : (
-            <>
+            <div className={styling.sectionContent}>
               <div className={styling.pillActions}>
-                <div className={styling.pillRow}>
+                <ButtonGroup className={styling.pillRow}>
                   {globalParams.customMarks.map((mark) => (
                     <ButtonGroupButton
                       key={mark.slug}
                       selected={allowedMarks.includes(mark.slug)}
+                      className={allowedMarks.includes(mark.slug) ? styling.buttonSelected : styling.button}
                       onClick={() => toggleMark(mark.slug)}
                     >
                       {mark.title}
                     </ButtonGroupButton>
                   ))}
-                </div>
-                <div className={styling.pillBulkActions}>
-                  <Button buttonType="muted" buttonSize="xs" onClick={selectAllMarks}>
-                    Select all
-                  </Button>
-                  <Button buttonType="muted" buttonSize="xs" onClick={removeAllMarks}>
-                    Remove all
-                  </Button>
-                </div>
+                </ButtonGroup>
+                <Button className={styling.buttonText} onClick={allowedMarks.length === allMarkSlugs.length ? removeAllMarks : selectAllMarks} buttonSize="xs">
+                  {allowedMarks.length === allMarkSlugs.length ? "Deselect all" : "Select all"}
+                </Button>
               </div>
               <p className={styling.empty}>
-                Configure which formatting options will be provided to editors.
+                Configure which marks will be provided to editors.
               </p>
-            </>
+            </div>
           )}
-        </div>
       </Section>
     </Canvas>
   );
