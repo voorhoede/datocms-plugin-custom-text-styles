@@ -21,6 +21,25 @@ import "./styles/index.css";
 
 const FIELD_EXTENSION_ID = "per-field-filter";
 
+const getMarkForStructuredTextField = (match: CustomMark): StructuredTextCustomMark => {
+  return {
+    id: match.slug,
+    label: match.title,
+    icon: match.icon.value as Icon,
+    keyboardShortcut: match.keyboardShortcut,
+    appliedStyle: getUserStyle(match.css),
+  };
+};
+
+const getStyleForStructuredTextField = (match: CustomStyle): StructuredTextCustomBlockStyle[] => {
+  return match.nodes.map((nodeItem) => ({
+    id: match.slug,
+    label: match.title,
+    node: nodeItem.value ?? nodeItem,
+    appliedStyle: getUserStyle(match.css),
+  }));
+};
+
 connect({
   renderConfigScreen(ctx) {
     return render(<ConfigScreen ctx={ctx} />);
@@ -48,39 +67,24 @@ connect({
   ) {
     const userParameters = getUserParameters(ctx.plugin.attributes.parameters);
 
-
-
     const addon = field.attributes.appearance.addons.find(
       (a) => a.id === ctx.plugin.id && a.field_extension === FIELD_EXTENSION_ID,
     );
 
-    if (!addon) return [];
+    // Graceful fallback: If no addon is configured, map and return all available custom styles
+    if (!addon) {
+      return userParameters.customStyles.flatMap(getStyleForStructuredTextField);
+    }
 
     const fieldParams = getFieldParameters(addon.parameters);
     if (!fieldParams) return [];
 
-    const usedStyles: string[] = fieldParams.allowedStyles;
+    return fieldParams.allowedStyles.flatMap((id) => {
+      const match = userParameters.customStyles.find((s) => s.slug === id);
+      if (!match) return [];
 
-    /*
-    Data passed on to Structured Text Field
-    For more information, see:
-    https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-styles-to-nodes
-    */
-    const usedStyleNodes: StructuredTextCustomBlockStyle[] = usedStyles.flatMap(
-      (id) => {
-        const match = userParameters.customStyles.find((s) => s.slug === id);
-        if (!match) return [];
-        const { nodes, ...customStyle } = match;
-        return nodes.map(({ value: node }) => ({
-          id: customStyle.slug,
-          node,
-          label: customStyle.title,
-          appliedStyle: getUserStyle(customStyle.css),
-        }));
-      },
-    );
-
-    return usedStyleNodes as StructuredTextCustomBlockStyle[];
+      return getStyleForStructuredTextField(match);
+    });
   },
 
   customMarksForStructuredTextField(
@@ -93,22 +97,17 @@ connect({
       (a) => a.id === ctx.plugin.id && a.field_extension === FIELD_EXTENSION_ID,
     );
 
-    if (!addon) return [];
+    if (!addon) {
+      return userParameters.customMarks.map(getMarkForStructuredTextField);
+    }
 
     const fieldParams = getFieldParameters(addon.parameters);
     if (!fieldParams) return [];
 
-    const usedMarks: StructuredTextCustomMark[] = fieldParams.allowedMarks.flatMap((id) => {
+    return fieldParams.allowedMarks.flatMap((id) => {
       const match = userParameters.customMarks.find((m) => m.slug === id);
       if (!match) return [];
-      return {
-        id: match.slug,
-        label: match.title,
-        icon: match.icon.value as Icon,
-        keyboardShortcut: match.keyboardShortcut,
-        appliedStyle: getUserStyle(match.css),
-      };
+      return getMarkForStructuredTextField(match);
     });
-    return usedMarks;
   },
 });
