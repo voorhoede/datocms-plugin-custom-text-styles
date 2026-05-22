@@ -36,7 +36,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    */
   const handleStyleAddition = () => {
 
-    const dummyStyle = DUMMY_CUSTOM_STYLES[customStyles.length < DUMMY_CUSTOM_STYLES.length ? customStyles.length : 2];
+    const dummyStyle = DUMMY_CUSTOM_STYLES[customStyles.length < DUMMY_CUSTOM_STYLES.length ? customStyles.length : DUMMY_CUSTOM_STYLES.length - 1];
     const nextStyles = [
       ...customStyles.map((style) => ({ ...style, isOpen: false })),
       {
@@ -48,7 +48,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   };
 
   const handleMarkAddition = () => {
-    const dummyMark = DUMMY_CUSTOM_MARKS[customMarks.length < DUMMY_CUSTOM_MARKS.length ? customMarks.length : 2];
+    const dummyMark = DUMMY_CUSTOM_MARKS[customMarks.length < DUMMY_CUSTOM_MARKS.length ? customMarks.length : DUMMY_CUSTOM_MARKS.length - 1];
     const nextMarks = [
       ...customMarks.map((mark) => ({ ...mark, isOpen: false })),
       {
@@ -116,7 +116,7 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
           <FontAwesomeIcon icon={faExclamationTriangle} color="var(--alert-color)" /> All of the below custom styles and marks will be available to all Structured Text Fields on default.
         </strong>
         <p>
-          If you do not want this, you can configure which specific styles and marks are avalaible for content editors on a per-block basis. See the <a href="https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/README.md#field-add-on-settings" target="_blank" rel="noopener noreferrer">README</a> for more information.
+          If you do not want this, you can configure which specific styles and marks are available for content editors on a per-block basis. See the <a href="https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/README.md#field-add-on-settings" target="_blank" rel="noopener noreferrer">README</a> for more information.
         </p>
       </Section>
       <Form className={styling.form}>
