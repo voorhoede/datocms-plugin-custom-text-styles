@@ -71,7 +71,6 @@ connect({
       (a) => a.id === ctx.plugin.id && a.field_extension === FIELD_EXTENSION_ID,
     );
 
-    // Graceful fallback: If no addon is configured, map and return all available custom styles
     if (!addon) {
       return userParameters.customStyles.flatMap(getStyleForStructuredTextField);
     }

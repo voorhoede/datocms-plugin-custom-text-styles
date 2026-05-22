@@ -32,7 +32,7 @@
 
 /* 
   Important! is used to override DatoCMS react-ui button styles
-  Ideally, I would use a selectOption component that has the same UI as the StructeredTextFieldOption component
+  Ideally, I would use a selectOption component that has the same UI as the StructuredTextFieldOption component
   but this is not available so I have to override the styles to get the same UI.
 */
 .button {
