@@ -61,9 +61,9 @@ Add your own Custom Styles. You can set the following attributes:
 
 2. Go to the Field add-ons section and locate the `Custom Text Styles` Settings panel.
 
-3. Under the Allowed Styles dropdown, click to toggle the specific block-level styles you want to provide to editors.
+3. Under `Allowed Styles`, click the pill-button toggles for the specific block-level styles you want to provide to editors.
 
-4. Under the Allowed Marks dropdown, click to toggle the specific inline text marks you want to provide to editors.
+4. Under `Allowed Marks`, click the pill-button toggles for the specific inline text marks you want to provide to editors.
 
 5. Save your field settings.
 
