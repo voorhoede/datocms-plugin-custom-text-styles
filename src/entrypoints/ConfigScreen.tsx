@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { RenderConfigScreenCtx } from "datocms-plugin-sdk";
-import { Canvas, Form, Button } from "datocms-react-ui";
+import { Canvas, Form, Button, Section } from "datocms-react-ui";
 import { PlusIcon } from "../components/icons/PlusIcon/PlusIcon";
-import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
+import { DUMMY_CUSTOM_MARKS, DUMMY_CUSTOM_STYLES } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
 import { MarkCard } from "../components/MarkCard/MarkCard";
 import { getUserParameters } from "../utils/userSettings";
 import { validateFields } from "../utils/validate";
 import * as styling from "./ConfigScreen.module.css";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
   ctx: RenderConfigScreenCtx;
@@ -33,10 +35,12 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
+
+    const dummyStyle = DUMMY_CUSTOM_STYLES[customStyles.length < DUMMY_CUSTOM_STYLES.length ? customStyles.length : DUMMY_CUSTOM_STYLES.length - 1];
     const nextStyles = [
       ...customStyles.map((style) => ({ ...style, isOpen: false })),
       {
-        ...DUMMY_CUSTOM_STYLE,
+        ...dummyStyle,
       },
     ];
     setCustomStyle(nextStyles);
@@ -44,10 +48,11 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   };
 
   const handleMarkAddition = () => {
+    const dummyMark = DUMMY_CUSTOM_MARKS[customMarks.length < DUMMY_CUSTOM_MARKS.length ? customMarks.length : DUMMY_CUSTOM_MARKS.length - 1];
     const nextMarks = [
       ...customMarks.map((mark) => ({ ...mark, isOpen: false })),
       {
-        ...DUMMY_CUSTOM_MARK,
+        ...dummyMark,
       },
     ];
     setCustomMark(nextMarks);
@@ -106,6 +111,14 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
 
   return (
     <Canvas ctx={ctx}>
+      <Section title="Please Note" highlighted>
+        <strong>
+          <FontAwesomeIcon icon={faExclamationTriangle} color="var(--alert-color)" /> All of the below custom styles and marks will be available to all Structured Text Fields on default.
+        </strong>
+        <p>
+          If you do not want this, you can configure which specific styles and marks are available for content editors on a per-block basis. See the <a href="https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/README.md#field-add-on-settings" target="_blank" rel="noopener noreferrer">README</a> for more information.
+        </p>
+      </Section>
       <Form className={styling.form}>
         <h2> Custom Styles </h2>
         <p> Styles that apply to a node</p>

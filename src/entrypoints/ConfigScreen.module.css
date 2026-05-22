@@ -1,5 +1,5 @@
 .form {
-  margin-block-end: var(--spacing-xl);
+  margin-block: var(--spacing-xl);
 }
 
 .description {

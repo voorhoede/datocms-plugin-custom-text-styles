@@ -1,0 +1,68 @@
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-m);
+  padding-block-end: var(--spacing-l);
+}
+
+.pillActions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-m);
+}
+
+.pillRow {
+  margin-left: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-s);
+}
+
+.pillBulkActions {
+  display: flex;
+  gap: var(--spacing-s);
+  flex-shrink: 0;
+}
+
+.empty {
+  font-size: var(--font-size-s);
+  color: var(--light-body-color);
+}
+
+/* 
+  Important! is used to override DatoCMS react-ui button styles
+  Ideally, I would use a selectOption component that has the same UI as the StructuredTextFieldOption component
+  but this is not available so I have to override the styles to get the same UI.
+*/
+.button {
+  padding: 4px 10px !important;
+  border-width: 2px !important;
+  background-color: #fff !important;
+  color: var(--light-body-color) !important;
+}
+
+.buttonSelected {
+  padding: 4px 10px !important;
+  border-width: 2px !important;
+  color: var(--dark-body-color) !important;
+  border-color: var(--accent-color) !important;
+  background-color: #fff !important;
+}
+
+.button:hover {
+  background-color: #fff !important;
+  border-color: rgba(var(--accent-color-rgb-components), 0.5) !important;
+}
+
+.buttonText {
+  font-weight: 400 !important;
+  font-size: var(--font-size-s) !important;
+  border: none !important;
+  background: none !important;
+  color: var(--light-body-color) !important;
+}
+
+.buttonText:hover {
+  text-decoration: underline !important;
+}

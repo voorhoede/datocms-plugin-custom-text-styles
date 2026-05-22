@@ -31,7 +31,7 @@ Add your own Custom Styles. You can set the following attributes:
   This is the CSS shown in the DatoCMS Structured Text editor
   ![Settings for Styles in Custom Text Styles plugin](./docs/settings-styles.png)
 
-  #### Custom Marks
+#### Custom Marks
 
   Add your own Custom Marks (inline styles). You can set the following attributes:
 
@@ -50,7 +50,27 @@ Add your own Custom Styles. You can set the following attributes:
 
 - `CSS`
   This is the CSS shown in the DatoCMS Structured Text editor
-  ![Settings for marks in Custom Text Styles plugin](./docs/settings-marks.png.png)
+  ![Settings for marks in Custom Text Styles plugin](./docs/settings-marks.png)
+
+### Field Add-on Settings
+![Field Add on preview](./docs/add-plugin.gif)
+
+  This plugin allows you to control exactly which custom text styles and marks are available to editors on a per-block basis within your Structured Text fields.
+
+1. Navigate to your DatoCMS schema and open the settings for the Structured Text field within your desired block.
+
+2. Go to the Field add-ons section and locate the `Custom Text Styles` Settings panel.
+
+3. Under `Allowed Styles`, click the pill-button toggles for the specific block-level styles you want to provide to editors.
+
+4. Under `Allowed Marks`, click the pill-button toggles for the specific inline text marks you want to provide to editors.
+
+5. Save your field settings.
+
+In the example screenshot provided, the editor will be able to use the following:
+- Selected Allowed Styles: Pink and Bold, Stylish, Accented Paragraph, Special Quote, Brand Paragraph
+- Selected Allowed Marks: Gold Tier, Silver Tier, Bronze Tier
+![Field Add on Settings](./docs/field-add-ons-settings.png)
 
 ### Front End Structured Text Implementation
 
