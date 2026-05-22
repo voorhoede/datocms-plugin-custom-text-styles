@@ -53,6 +53,7 @@ Add your own Custom Styles. You can set the following attributes:
   ![Settings for marks in Custom Text Styles plugin](./docs/settings-marks.png)
 
 ### Field Add-on Settings
+![Field Add on preview](./docs/add-plugin.gif)
 
   This plugin allows you to control exactly which custom text styles and marks are available to editors on a per-block basis within your Structured Text fields.
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import type { RenderConfigScreenCtx } from "datocms-plugin-sdk";
 import { Canvas, Form, Button, Section } from "datocms-react-ui";
 import { PlusIcon } from "../components/icons/PlusIcon/PlusIcon";
-import { DUMMY_CUSTOM_MARK, DUMMY_CUSTOM_STYLE } from "./variables";
+import { DUMMY_CUSTOM_MARKS, DUMMY_CUSTOM_STYLES } from "./variables";
 import { StyleCard } from "../components/StyleCard/StyleCard";
 import { MarkCard } from "../components/MarkCard/MarkCard";
 import { getUserParameters } from "../utils/userSettings";
@@ -35,10 +35,12 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
    * Handlers for adding, removing and changing custom styles
    */
   const handleStyleAddition = () => {
+
+    const dummyStyle = DUMMY_CUSTOM_STYLES[customStyles.length < DUMMY_CUSTOM_STYLES.length ? customStyles.length : 2];
     const nextStyles = [
       ...customStyles.map((style) => ({ ...style, isOpen: false })),
       {
-        ...DUMMY_CUSTOM_STYLE,
+        ...dummyStyle,
       },
     ];
     setCustomStyle(nextStyles);
@@ -46,10 +48,11 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
   };
 
   const handleMarkAddition = () => {
+    const dummyMark = DUMMY_CUSTOM_MARKS[customMarks.length < DUMMY_CUSTOM_MARKS.length ? customMarks.length : 2];
     const nextMarks = [
       ...customMarks.map((mark) => ({ ...mark, isOpen: false })),
       {
-        ...DUMMY_CUSTOM_MARK,
+        ...dummyMark,
       },
     ];
     setCustomMark(nextMarks);
