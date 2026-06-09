@@ -1,5 +1,6 @@
 import { FormLabel } from "datocms-react-ui";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import css from "react-syntax-highlighter/dist/esm/languages/hljs/css";
 
 import * as styling from "./CodeBlock.module.css";
 import { useErrorSignal } from "../../Card/ErrorContext";
@@ -13,6 +14,8 @@ type CodeBlockProps<T extends CustomStyle | CustomMark> = {
   onBlur: () => void;
 };
 
+SyntaxHighlighter.registerLanguage("css", css);
+
 const canvasSyntaxTheme = {
   hljs: {
     display: "block",
@@ -23,22 +26,47 @@ const canvasSyntaxTheme = {
     fontFamily: "var(--monospaced-font-family)",
   },
   "hljs-selector-tag": {
-    color: "var(--color--ink-primary)",
+    color: "var(--color--primary-soft--ink)",
   },
   "hljs-selector-class": {
-    color: "var(--color--selected--ink)",
-  },
-  "hljs-attribute": {
     color: "var(--color--ink-link)",
   },
+  "hljs-selector-id": {
+    color: "var(--color--ink-primary)",
+  },
+  "hljs-selector-attr": {
+    color: "var(--color--ink-warning)",
+  },
+  "hljs-selector-pseudo": {
+    color: "var(--color--ink-warning)",
+  },
+  "hljs-attribute": {
+    color: "var(--color--ink-primary)",
+  },
+  "hljs-built_in": {
+    color: "var(--color--ink-link)",
+  },
+  "hljs-keyword": {
+    color: "var(--color--ink-primary)",
+  },
+  "hljs-variable": {
+    color: "var(--color--ink-danger)",
+  },
   "hljs-string": {
-    color: "var(--color--success-soft--ink)",
+    color: "var(--color--ink-success)",
   },
   "hljs-number": {
-    color: "var(--color--warning-soft--ink)",
+    color: "var(--color--ink-warning)",
+  },
+  "hljs-literal": {
+    color: "var(--color--ink-warning)",
+  },
+  "hljs-meta": {
+    color: "var(--color--ink-subtle)",
   },
   "hljs-comment": {
     color: "var(--color--ink-subtle)",
+    fontStyle: "italic",
   },
 } as const;
 
