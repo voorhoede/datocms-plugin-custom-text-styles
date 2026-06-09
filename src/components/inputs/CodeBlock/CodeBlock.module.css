@@ -25,8 +25,8 @@
   resize: vertical;
   padding: var(--padding);
   color: transparent;
-  caret-color: white;
-  font-family: monospace;
+  caret-color: var(--color--ink);
+  font-family: var(--monospaced-font-family);
   font-size: var(--font-size-m);
   line-height: 1.5;
   text-wrap-mode: nowrap;
@@ -36,6 +36,6 @@
   transition: 0.2s var(--material-ease);
 }
 .textarea:focus {
-  border: 1px solid var(--primary-color);
-  outline: 3px solid var(--semi-transparent-accent-color);
+  border: 1px solid var(--color--focus--border);
+  outline: 3px solid var(--color--focus--outline);
 }

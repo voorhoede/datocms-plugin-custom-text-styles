@@ -1,6 +1,5 @@
-import { FormLabel, TextField } from "datocms-react-ui";
+import { FormLabel } from "datocms-react-ui";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import { monokaiSublime } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import * as styling from "./CodeBlock.module.css";
 import { useErrorSignal } from "../../Card/ErrorContext";
@@ -13,6 +12,35 @@ type CodeBlockProps<T extends CustomStyle | CustomMark> = {
   index: number;
   onBlur: () => void;
 };
+
+const canvasSyntaxTheme = {
+  hljs: {
+    display: "block",
+    overflowX: "auto",
+    padding: "var(--padding)",
+    background: "var(--color--code--surface)",
+    color: "var(--color--code--ink)",
+    fontFamily: "var(--monospaced-font-family)",
+  },
+  "hljs-selector-tag": {
+    color: "var(--color--ink-primary)",
+  },
+  "hljs-selector-class": {
+    color: "var(--color--selected--ink)",
+  },
+  "hljs-attribute": {
+    color: "var(--color--ink-link)",
+  },
+  "hljs-string": {
+    color: "var(--color--success-soft--ink)",
+  },
+  "hljs-number": {
+    color: "var(--color--warning-soft--ink)",
+  },
+  "hljs-comment": {
+    color: "var(--color--ink-subtle)",
+  },
+} as const;
 
 export const CodeBlock = <T extends CustomStyle | CustomMark>({
   style,
@@ -34,7 +62,7 @@ export const CodeBlock = <T extends CustomStyle | CustomMark>({
       <div className={styling.codeBlock}>
         <SyntaxHighlighter
           language="css"
-          style={monokaiSublime}
+          style={canvasSyntaxTheme}
           className={styling.syntaxHighligther}
         >
           {style.css}
