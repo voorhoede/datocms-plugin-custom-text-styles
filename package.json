@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
     "prettier": "prettier --write .",

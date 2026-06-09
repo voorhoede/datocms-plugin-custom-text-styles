@@ -5,4 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   base: "./",
   plugins: [react()],
+  resolve: {
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".mts", ".json"],
+  },
 });
