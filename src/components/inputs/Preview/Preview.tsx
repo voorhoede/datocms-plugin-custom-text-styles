@@ -15,7 +15,7 @@ export const Preview = ({ css }: PreviewProps) => {
         }
       : {
           isValid: false,
-          css: { color: "var(--alert-color)" },
+          css: { color: "var(--color--danger-soft--ink)" },
           text: "Please provide valid css",
         };
   }, [css]);

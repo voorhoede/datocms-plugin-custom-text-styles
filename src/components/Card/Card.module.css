@@ -3,12 +3,12 @@
   margin-block-end: var(--spacing-l);
   padding: var(--spacing-l);
   border-radius: 4px;
-  box-shadow: 0 2px 5px #0000001a;
+  box-shadow: var(--shadow--raised);
   transition: border 0.2s var(--material-ease);
 }
 
 .card[data-status="invalid"] {
-  border: 1px solid var(--alert-color);
+  border: 1px solid var(--color--danger-soft--border);
 }
 
 .content {
@@ -30,4 +30,4 @@
   right: 0;
   background: none;
   margin: var(--spacing-m);
-} 
+}

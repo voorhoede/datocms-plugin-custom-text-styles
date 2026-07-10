@@ -41,7 +41,10 @@ export const Card = ({
           type="button"
           leftIcon={<DeleteIcon />}
           buttonType="negative"
-          style={{ backgroundColor: "transparent", color: "var(--alert-color)" }}
+          style={{
+            backgroundColor: "transparent",
+            color: "var(--color--danger-soft--ink)",
+          }}
           className={styling.deleteButton}
           onClick={onDelete}
         ></Button>
