@@ -12,3 +12,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Publish package signed with npm package provenance
 
 [1.2.0]: https://github.com/voorhoede/datocms-plugin-custom-text-styles/compare/a6fa561...v1.2.0
+
+[1.2.1]: dark mode support added by @marcelofinamorvieira
