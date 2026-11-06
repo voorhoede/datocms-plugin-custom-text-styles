@@ -1,8 +1,6 @@
 import { SelectField } from "datocms-react-ui";
 import { NODE_OPTIONS } from "../../entrypoints/variables";
 import { CodeBlock } from "../inputs/CodeBlock/CodeBlock";
-import { useMemo } from "react";
-import { getUserStyle } from "../../utils/userSettings";
 import { CardTitle } from "../Card/CardTitle/CardTitle";
 import { Slug } from "../inputs/Slug/Slug";
 import { Title } from "../inputs/Title/Title";

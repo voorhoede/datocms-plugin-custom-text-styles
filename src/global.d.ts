@@ -1,15 +1,17 @@
 declare module "*.module.css";
 
+type Node = "paragraph" | "heading";
+
 type CustomStyleNode = {
   label: string;
-  value: "paragraph" | "heading";
+  value: BlockNodeTypeWithCustomStyle;
 };
 
 type CustomStyle = {
   slug: string;
   title: string;
   css: string;
-  nodes: CustomStyleNode[];
+  nodes: BlockNodeTypeWithCustomStyle[];
   isOpen: boolean;
 };
 
