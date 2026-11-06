@@ -1,13 +1,15 @@
-# DatoCMS plugin: Custom text Styles
+# DatoCMS plugin: Custom Text Styles
 
-This DatoCMS plugin makes it possible to add custom styles to the editor of Structured text fields by setting css properties. You can add as many styles as you'd like in the Plugin settings.
+This DatoCMS plugin adds custom styles and marks to the editor of Structured Text fields. You define them with CSS in the plugin settings, and editors pick them from the toolbar.
+
 ![preview of Custom Text Styles plugin](./docs/preview.png)
 
 ## Features
 
-- Add custom styles to editor of Structured Text Fields
-- add custom marks (inline styles) to editor of Structured Text Fields
-- Add custom CSS class names to rendered nodes in your Structured Text Fields
+- Add custom styles (for headings and paragraphs) to the Structured Text editor
+- Add custom marks (inline styles) to the Structured Text editor
+- Choose which styles and marks are available per field, so per block
+- Render the styles and marks on your front end as CSS classes
 
 ## Configuration
 
@@ -17,195 +19,84 @@ This DatoCMS plugin makes it possible to add custom styles to the editor of Stru
 
 Add your own Custom Styles. You can set the following attributes:
 
-- `Slug`
-  Set this slug to what you want your final css class to be.
-  <strong>Please Note: Upon changing this property, you will have to update all Structured Text Fields already used in DatoCMS.</strong>
+##### `Slug`
+Set this slug to what you want your final css class to be.
+**Please Note: Upon changing this property, you will have to update all Structured Text Fields already used in DatoCMS.**
 
-- `Title`
-  This title will be shown in the DatoCMS Structured Text editor.
+##### `Title`
+This title will be shown in the DatoCMS Structured Text editor.
 
-- `Node`
-  For now, you can choose between <i>heading</i> and <i>paragraph</i>
+##### `Node`
+For now, you can choose between _heading_ and _paragraph_
 
-- `CSS`
-  This is the CSS shown in the DatoCMS Structured Text editor
-  ![Settings for Styles in Custom Text Styles plugin](./docs/settings-styles.png)
+##### `CSS`
+This is the CSS shown in the DatoCMS Structured Text editor
+![Settings for Styles in Custom Text Styles plugin](./docs/settings-styles.png)
 
 #### Custom Marks
 
-  Add your own Custom Marks (inline styles). You can set the following attributes:
+Add your own Custom Marks (inline styles). You can set the following attributes:
 
-- `Slug`
-  Set this slug to what you want your final css class to be.
-  <strong>Please Note: Upon changing this property, you will have to update all Structured Text Fields already used in DatoCMS.</strong>
+##### `Slug`
+Set this slug to what you want your final css class to be.
+**Please Note: Upon changing this property, you will have to update all Structured Text Fields already used in DatoCMS.**
 
-- `Title`
-  This title will be shown in the DatoCMS Structured Text editor.
+##### `Title`
+This title will be shown in the DatoCMS Structured Text editor.
 
-- `Icon`
-  You can set an icon name based on the icons available from [fontawesome free icons](https://fontawesome.com/search?q=house&o=r&ic=free)
+##### `Icon`
+You can set an icon name based on the icons available from [fontawesome free icons](https://fontawesome.com/search?q=house&o=r&ic=free)
 
-- `Keyboard Shortcut`
-  You can set a keyboard shortcut you can use inside the DatoCMS Structured Text editor.
+##### `Keyboard Shortcut`
+You can set a keyboard shortcut you can use inside the DatoCMS Structured Text editor.
 
-- `CSS`
-  This is the CSS shown in the DatoCMS Structured Text editor
-  ![Settings for marks in Custom Text Styles plugin](./docs/settings-marks.png)
+##### `CSS`
+This is the CSS shown in the DatoCMS Structured Text editor
+![Settings for marks in Custom Text Styles plugin](./docs/settings-marks.png)
 
-### Field Add-on Settings
-![Field Add on preview](./docs/add-plugin.gif)
 
-  This plugin allows you to control exactly which custom text styles and marks are available to editors on a per-block basis within your Structured Text fields.
+### Per-field settings
 
-1. Navigate to your DatoCMS schema and open the settings for the Structured Text field within your desired block.
+By default all styles and marks are available in every Structured Text field. With the **Custom Text Styles** field add-on you pick which ones each field gets.
 
-2. Go to the Field add-ons section and locate the `Custom Text Styles` Settings panel.
+![Field add-on preview](./docs/add-plugin.gif)
 
-3. Under `Allowed Styles`, click the pill-button toggles for the specific block-level styles you want to provide to editors.
+See [Per-field settings](./docs/per-field-settings.md) for the steps, an example and how the add-on works.
 
-4. Under `Allowed Marks`, click the pill-button toggles for the specific inline text marks you want to provide to editors.
+## Front end
 
-5. Save your field settings.
+Custom styles are stored as the `style` property of a `paragraph` or `heading` node. Custom marks are stored in the `marks` array of a `span` node. Both hold the slug from the plugin settings.
 
-In the example screenshot provided, the editor will be able to use the following:
-- Selected Allowed Styles: Pink and Bold, Stylish, Accented Paragraph, Special Quote, Brand Paragraph
-- Selected Allowed Marks: Gold Tier, Silver Tier, Bronze Tier
-![Field Add on Settings](./docs/field-add-ons-settings.png)
-
-### Front End Structured Text Implementation
-
-#### Custom Styles
-
-Nodes inside Structured Text will be rendered with a `style` attribute corresponding with the `Slug` set in the Plugin Settings.
-(See more info from DatoCMS)[https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-styles-to-nodes]
-
-```JSON
+```json
 {
-    "type": "paragraph",
-    "style": "centered",
-    "children": [
-      {
-        "type": "span",
-        "value": "This text is centered"
-      }
-    ]
-},
-```
-
-Update your front end so that you attribute the `style` property as a CSS class.
-
-```TSX
-// example of a possible implementation of a Paragraph Node
----
-import type { Paragraph } from 'datocms-structured-text-utils';
-
-interface Props {
-  node: Paragraph;
-}
-
-const { node } = Astro.props;
----
-// Style attribute ('centered') will be accesible from the node
-// Paragraphs that have a custom style of 'Centered' will have the css class 'centered'
-<p class={node.style}><slot /></p>
-
-```
-
-```HTML
-<!-- rendered HTML -->
-<p class='centered'> This text is centered</p>
-```
-
-You can now proceed to implement your own custom CSS for the `centered` class
-
-```css
-p.centered {
-  text-align: center;
-}
-```
-
-#### Custom Marks
-
-Marks inside Structured Text will be rendered with a `mark` attribute corresponding with the `Slug` set in the Plugin Settings.
-(See more info from DatoCMS)[https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-marks]
-
-```JSON
- {
-      "type": "paragraph",
-      "children": [
-        {
-          "type": "span",
-          "value": "This is normal text with"
-        },
-        {
-          "type": "span",
-          "marks": ["shout"],
-          "value": "only this part"
-        },
-        {
-          "type": "span",
-          "value": "having a different mark."
-        }
-      ]
+  "type": "paragraph",
+  "style": "centered",
+  "children": [
+    {
+      "type": "span",
+      "value": "This text is centered, and "
+    },
+    {
+      "type": "span",
+      "marks": ["shout"],
+      "value": "this part shouts"
     }
-```
-
-Update your front end so that you attribute the `mark` property as a CSS class.
-
-```TSX
-// example of a possible implementation of a Mark
----
-import type { DefaultMark, Span } from 'datocms-structured-text-utils';
-
-interface Props {
-  node: Span;
-}
-
-const { node } = Astro.props;
-
-type Tag = 'span' | 'strong' | 'em' | 'del' | 'mark' | 'code' | 'u';
-
-const elementByMark: Record<string | DefaultMark, Tag> = {
-  strong: 'strong',
-  code: 'code',
-  emphasis: 'em',
-  underline: 'u',
-  strikethrough: 'del',
-  highlight: 'mark',
-
-  // Add custom marks set in custom-text-styles plugin. You can set this to any valid html tag.
-  'shout': 'strong',
-};
-
-// ensure that all html tags are included
-// note the usage of 'node.marks' here, this is were all the applied marks are being stored.
-// in our case, this will include 'shout'
-const Tags: { Tag: Tag; mark: string }[] =
-  node.marks?.map((mark) => {
-    const Tag = elementByMark[mark] || 'span';
-    return { Tag: Tag, mark };
-  }) || [];
----
-
-{
-  Tags.reduce(
-    (children, { Tag, mark }) => <Tag class={mark}>{children}</Tag>,
-    node.value
-  )
+  ]
 }
 ```
 
-```HTML
-<!-- rendered HTML -->
- <!-- notice that the tag with the 'shout' class is the same as set in elementByMark -->
-<p>This is normal text with <strong class="shout">only this part</strong> having a different mark.</p>
+Your front end has to turn those slugs into CSS classes. Pick your framework for a complete example:
+
+- [Astro](./docs/front-end-astro.md)
+- [React (Next.js, Remix, ...)](./docs/front-end-react.md)
+
+Both examples render the JSON above as:
+
+```html
+<p class="centered">This text is centered, and <strong class="shout">this part shouts</strong></p>
 ```
 
-```css
-strong.shout {
-  text-transform: uppercase;
-}
-```
+For other frameworks, see the DatoCMS docs on [custom styles](https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-styles-to-nodes) and [custom marks](https://www.datocms.com/docs/plugin-sdk/structured-text-customizations#adding-custom-marks).
 
 ## Contributing
 

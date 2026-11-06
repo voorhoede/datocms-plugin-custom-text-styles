@@ -113,10 +113,10 @@ const ConfigScreen: React.FC<Props> = ({ ctx }) => {
     <Canvas ctx={ctx}>
       <Section title="Please Note" highlighted>
         <strong>
-          <FontAwesomeIcon icon={faExclamationTriangle} color="var(--alert-color)" /> All of the below custom styles and marks will be available to all Structured Text Fields on default.
+          <FontAwesomeIcon icon={faExclamationTriangle} color="var(--alert-color)" /> All of the below custom styles and marks will be available to all Structured Text Fields by default.
         </strong>
         <p>
-          If you do not want this, you can configure which specific styles and marks are available for content editors on a per-block basis. See the <a href="https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/README.md#field-add-on-settings" target="_blank" rel="noopener noreferrer">README</a> for more information.
+          If you do not want this, you can configure which specific styles and marks are available for content editors on a per-block basis. See the <a href="https://github.com/voorhoede/datocms-plugin-custom-text-styles/blob/main/docs/per-field-settings.md" target="_blank" rel="noopener noreferrer">per-field settings documentation</a> for more information.
         </p>
       </Section>
       <Form className={styling.form}>

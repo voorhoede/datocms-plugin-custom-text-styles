@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [1.2.1]: dark mode support added by @marcelofinamorvieira
 
-## [2.0.0] - 2026-05-15
+## [2.0.0] - 2026-10-06
 
 This major release introduces granular control over which styles and marks are available in specific Structured Text fields. **You can now configure these settings per block.**
 
